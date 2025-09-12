@@ -1,0 +1,47 @@
+Projeto Integrador – Fatec Jahu
+
+Jaú, 11 de setembro de 2025.
+
+
+
+Tema: Monitoramento da entrega de refeições hospitalares
+
+
+
+Contexto do problema
+
+No hospital, a prescrição da dieta é feita pelo médico e validada pela nutricionista clínica.
+Após isso, a refeição é preparada e entregue pelas copeiras aos pacientes.
+Atualmente, não há um sistema que registre e valide o processo de entrega, o que pode gerar falhas como atrasos, extravios de bandejas ou entrega incorreta da dieta ao paciente.
+
+Necessidade
+
+•	Monitore o tempo de entrega (início e fim).
+
+•	Registre qual copeira realizou a entrega.
+
+•	Valide se a bandeja corresponde ao paciente certo.
+
+•	Utilize pulseiras com código de barras dos pacientes e etiquetas com código de barras nas bandejas.
+
+•	Gere relatórios simples (ex.: tempo médio de entrega, erros de validação, histórico por paciente).
+
+•	Esteja preparada para futura integração com o prontuário eletrônico.
+
+Objetivo esperado
+
+•	Um protótipo funcional que demonstre como a tecnologia pode garantir:
+
+•	Segurança alimentar do paciente.
+
+•	Controle operacional do processo de entrega.
+
+•	Rastreamento das refeições entregues.
+
+
+
+Observação
+
+Por questões de segurança e confidencialidade, o banco de dados real do hospital não será disponibilizado.
+A equipe deverá criar um banco de dados fictício para simular pacientes, prescrições e dietas.
+Entretanto, a solução deve ser arquitetada de forma a permitir futura integração com o sistema real do hospital.
