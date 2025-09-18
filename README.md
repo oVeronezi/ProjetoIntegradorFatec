@@ -115,7 +115,7 @@ Estes são os requisitos de qualidade do sistema:
 - `[Detalhado]`
 
 #### **3.5. Diagrama de Classes**
-- `[A ser inserido]`
+![Diagrama de Classes](img/DietaHospitalar.png)
 
 ---
 
