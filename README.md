@@ -111,7 +111,7 @@ Estes são os requisitos de qualidade do sistema:
 - **RNF5 - Manutenibilidade:** O código deve ser bem documentado para facilitar futuras manutenções e evoluções.
 
 #### **3.4. Diagrama de Casos de Uso**
-- `[Resumido]`
+![Diagrama de Classes](img/casosUso.jpg)
 - `[Detalhado]`
 
 #### **3.5. Diagrama de Classes**
