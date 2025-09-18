@@ -1,5 +1,7 @@
 # CENTRO PAULA SOUZA
+
 ## FACULDADE DE TECNOLOGIA DE JAHU
+
 ### CURSO DE TECNOLOGIA EM DESENVOLVIMENTO DE SOFTWARE MULTIPLATAFORMA
 
 ---
@@ -7,12 +9,14 @@
 ## **DOCUMENTAÇÃO DO PROJETO INTERDISCIPLINAR (PI)**
 
 ## **Controle de Dieta Hospitalar**
-### *Sistema de monitoramento e validação de entregas de refeições hospitalares (Protótipo UNIMED)*
+
+### _Sistema de monitoramento e validação de entregas de refeições hospitalares (Protótipo UNIMED)_
 
 **Jahu - SP**
 **2º semestre/2025**
 
 **Autores:**
+
 - Luis Felipe Veronezi Bernado
 - Leonardo Antoniassi
 - Pedro Henrique do Vale Mineo
@@ -23,11 +27,13 @@
 ### **1. Descrição do Projeto**
 
 #### **1.1. Introdução**
+
 Este projeto tem como objetivo desenvolver um protótipo funcional para o monitoramento e validação da entrega de refeições no ambiente hospitalar. Atualmente, a ausência de um sistema para registrar e validar este processo pode levar a falhas operacionais, como atrasos, extravios de bandejas ou a entrega incorreta de dietas a pacientes.
 
 A solução proposta utiliza tecnologia para garantir a segurança alimentar, o controle operacional e o rastreamento eficiente das refeições, desde a preparação até a entrega final ao paciente.
 
 #### **1.2. Tecnologias e Ferramentas**
+
 Para o desenvolvimento deste projeto, serão utilizadas as seguintes tecnologias e ferramentas:
 
 - **Linguagens de Programação:** `C#`, `HTML`, `CSS`
@@ -39,6 +45,7 @@ Para o desenvolvimento deste projeto, serão utilizadas as seguintes tecnologias
 - **Modelo de Processo de Desenvolvimento (Scrum):** Para o desenvolvimento deste projeto, foi adotada a metodologia ágil Scrum. Esta abordagem foi escolhida por sua capacidade de lidar com a complexidade e a incerteza inerentes ao desenvolvimento de um novo sistema, permitindo que o time se adapte rapidamente a mudanças e imprevistos.
 
 #### **1.3. Cronograma**
+
 A plataforma `Trello` foi utilizada como ferramenta de gerenciamento de tarefas para garantir a organização e a transparência do projeto. O Trello permite visualizar o fluxo de trabalho de forma clara e intuitiva, servindo como nosso "quadro Scrum" digital.
 
 - **Link do Trello:** [Quadro de Planejamento do PI](https://trello.com/invite/b/67d96ee6c4eec72235cd27a7/ATTIcc8c394bb422c889d3f6de5c965a6044FC681C1A/pi)
@@ -48,9 +55,11 @@ A plataforma `Trello` foi utilizada como ferramenta de gerenciamento de tarefas 
 ### **2. Objetivos**
 
 #### **2.1. Geral**
+
 Desenvolver um protótipo funcional para monitorar e validar o processo de entrega de refeições hospitalares, garantindo a segurança do paciente e a eficiência operacional.
 
 #### **2.2. Específicos**
+
 - Monitorar o tempo de entrega das refeições (início e fim).
 - Registrar qual copeira realizou a entrega.
 - Validar se a bandeja corresponde ao paciente certo, utilizando códigos de barras.
@@ -65,30 +74,36 @@ Desenvolver um protótipo funcional para monitorar e validar o processo de entre
 
 **-- Histórias de Usuário da Copeira --**
 
-* **HU1: Iniciar uma rodada de entregas** (Relacionado a RF2, RF3, RF4)
-    > Como uma **copeira**, eu quero **me logar no sistema no início do meu turno** para que **todas as entregas que eu realizar sejam registradas em meu nome**.
+- **HU1: Iniciar uma rodada de entregas** (Relacionado a RF2, RF3, RF4)
 
-* **HU2: Validar a entrega de uma refeição** (Relacionado a RF1, RF3, RF4, RF5)
-    > Como uma **copeira**, eu quero **escanear o código de barras da pulseira do paciente e depois o da bandeja** para que **o sistema confirme automaticamente se a refeição está correta para aquele paciente, garantindo sua segurança**.
+  > Como uma **copeira**, eu quero **me logar no sistema no início do meu turno** para que **todas as entregas que eu realizar sejam registradas em meu nome**.
 
-* **HU3: Ser alertada sobre um erro de entrega** (Relacionado a RF6)
-    > Como uma **copeira**, eu quero **receber um alerta sonoro e visual bem claro (ex: tela vermelha)** para que **eu saiba imediatamente que a bandeja não pertence ao paciente e possa corrigir o erro na hora**.
+- **HU2: Validar a entrega de uma refeição** (Relacionado a RF1, RF3, RF4, RF5)
 
-* **HU4: Finalizar uma entrega** (Relacionado a RF1 - conclusão da entrega)
-    > Como uma **copeira**, eu quero **marcar a entrega como "concluída" no sistema após deixar a bandeja com o paciente** para que **o horário exato do fim da entrega seja registrado**.
+  > Como uma **copeira**, eu quero **escanear o código de barras da pulseira do paciente e depois o da bandeja** para que **o sistema confirme automaticamente se a refeição está correta para aquele paciente, garantindo sua segurança**.
+
+- **HU3: Ser alertada sobre um erro de entrega** (Relacionado a RF6)
+
+  > Como uma **copeira**, eu quero **receber um alerta sonoro e visual bem claro (ex: tela vermelha)** para que **eu saiba imediatamente que a bandeja não pertence ao paciente e possa corrigir o erro na hora**.
+
+- **HU4: Finalizar uma entrega** (Relacionado a RF1 - conclusão da entrega)
+  > Como uma **copeira**, eu quero **marcar a entrega como "concluída" no sistema após deixar a bandeja com o paciente** para que **o horário exato do fim da entrega seja registrado**.
 
 **-- Histórias de Usuário do Gestor de Nutrição --**
 
-* **HU5: Analisar a eficiência da equipe** (Relacionado a RF7)
-    > Como um **gestor de nutrição**, eu quero **gerar um relatório com o tempo médio de entrega das refeições** para que **eu possa avaliar a eficiência da operação e otimizar os processos**.
+- **HU5: Analisar a eficiência da equipe** (Relacionado a RF7)
 
-* **HU6: Monitorar a segurança do paciente** (Relacionado a RF8)
-    > Como um **gestor de nutrição**, eu quero **gerar um relatório de todos os erros de validação (bandeja vs. paciente)** para que **eu possa investigar as causas, identificar padrões e aplicar treinamentos para aumentar a segurança**.
+  > Como um **gestor de nutrição**, eu quero **gerar um relatório com o tempo médio de entrega das refeições** para que **eu possa avaliar a eficiência da operação e otimizar os processos**.
 
-* **HU7: Auditar as entregas de um paciente** (Relacionado a RF9)
-    > Como um **gestor de nutrição**, eu quero **consultar o histórico completo de refeições entregues a um paciente específico** para que **eu possa auditar o serviço, verificar a adesão à dieta e ter rastreabilidade total do processo**.
+- **HU6: Monitorar a segurança do paciente** (Relacionado a RF8)
+
+  > Como um **gestor de nutrição**, eu quero **gerar um relatório de todos os erros de validação (bandeja vs. paciente)** para que **eu possa investigar as causas, identificar padrões e aplicar treinamentos para aumentar a segurança**.
+
+- **HU7: Auditar as entregas de um paciente** (Relacionado a RF9)
+  > Como um **gestor de nutrição**, eu quero **consultar o histórico completo de refeições entregues a um paciente específico** para que **eu possa auditar o serviço, verificar a adesão à dieta e ter rastreabilidade total do processo**.
 
 #### **3.2. Requisitos Funcionais**
+
 Estes são os requisitos que o sistema deve cumprir para atender às necessidades do hospital:
 
 - **RF1:** O sistema deve registrar o horário de início e fim da entrega.
@@ -102,6 +117,7 @@ Estes são os requisitos que o sistema deve cumprir para atender às necessidade
 - **RF9:** O sistema deve manter um histórico de entregas por paciente.
 
 #### **3.3. Requisitos Não Funcionais**
+
 Estes são os requisitos de qualidade do sistema:
 
 - **RNF1 - Usabilidade:** A interface deve ser simples, intuitiva e fácil de usar para as copeiras.
@@ -111,36 +127,73 @@ Estes são os requisitos de qualidade do sistema:
 - **RNF5 - Manutenibilidade:** O código deve ser bem documentado para facilitar futuras manutenções e evoluções.
 
 #### **3.4. Diagrama de Casos de Uso**
+
 - `[Resumido]`
 - `[Detalhado]`
 
 #### **3.5. Diagrama de Classes**
+
 ![Diagrama de Classes](img/DietaHospitalar.png)
 
 ---
 
 ### **4. Estudo de Viabilidade**
+
 `[A ser desenvolvido]`
 
 ### **5. Regras de Negócio**
-`[A ser desenvolvido]`
+
+As Regras de Negócio são as políticas, restrições e lógicas específicas que o sistema deve seguir para que o processo funcione de forma correta, segura e consistente, de acordo com as normas operacionais do hospital. Elas funcionam como as "leis" que governam as funcionalidades do sistema.
+
+---
+
+#### **RN1: Acesso e Autenticação**
+
+- **RN1.1 - Acesso Restrito:** O acesso ao sistema só é permitido para usuários autenticados com login e senha válidos.
+- **RN1.2 - Rastreabilidade de Ações:** Todas as ações de registro e validação devem ser obrigatoriamente vinculadas à copeira que está logada na sessão. O sistema não pode permitir uma entrega anônima.
+- **RN1.3 - Perfis de Usuário:** O sistema deve possuir pelo menos dois níveis de acesso: **Copeira** (com permissão para registrar entregas) e **Gestor de Nutrição** (com permissão para gerar relatórios e visualizar dados consolidados).
+
+#### **RN2: Processo de Entrega**
+
+- **RN2.1 - Ciclo de Entrega:** Uma entrega é um ciclo que se inicia com o registro de "início da entrega" e termina com o registro de "entrega concluída". O sistema deve registrar ambos os horários.
+- **RN2.2 - Proibição de Entrega sem Validação:** Uma entrega só pode ser marcada como "concluída" após uma validação bem-sucedida, conforme as regras da seção RN3.
+
+#### **RN3: Validação e Segurança (Regras Críticas)**
+
+- **RN3.1 - Validação Obrigatória:** Para validar uma entrega, é obrigatória a leitura bem-sucedida de dois códigos de barras: o da pulseira do paciente e o da etiqueta da bandeja.
+- **RN3.2 - Critério de Sucesso:** A validação é considerada bem-sucedida _se, e somente se,_ o identificador do paciente lido na pulseira for idêntico ao identificador do paciente associado à bandeja no sistema.
+- **RN3.3 - Bloqueio por Incompatibilidade:** Se a validação falhar (os identificadores não corresponderem), o sistema deve **bloquear** a continuação do processo. A copeira não poderá registrar a entrega como "concluída".
+- **RN3.4 - Alerta Imediato:** Em caso de falha na validação, um alerta sonoro e visual deve ser disparado imediatamente para notificar a copeira do erro.
+- **RN3.5 - Registro de Falha:** Toda falha de validação deve ser registrada no sistema para fins de auditoria e geração de relatórios.
+
+#### **RN4: Dados e Relatórios**
+
+- **RN4.1 - Cálculo do Tempo de Entrega:** O tempo de entrega, usado no relatório de tempo médio, deve ser calculado como a diferença (em minutos) entre o horário de "entrega concluída" e o de "início da entrega".
+- **RN4.2 - Integridade do Histórico:** Nenhum registro de entrega (bem-sucedida ou falha) pode ser excluído do sistema por um usuário com perfil de "Copeira".
+- **RN4.3 - Conteúdo do Relatório de Erros:** O relatório de erros de validação deve conter, no mínimo: a data e hora da ocorrência, o nome da copeira, o identificador do paciente e o identificador da bandeja envolvidos na falha.
 
 ### **6. Design (UI/UX)**
+
 `[A ser desenvolvido]`
 
 ### **7. Banco de Dados**
+
 `[A ser desenvolvido]`
 
 ### **8. Protótipo**
+
 `[A ser desenvolvido]`
 
 ### **9. Aplicação**
+
 `[A ser desenvolvido]`
 
 ### **10. Considerações Finais**
+
 `[A ser desenvolvido]`
 
 ---
 
 ### **Referências Bibliográficas**
+
 `[A ser inserido]`
