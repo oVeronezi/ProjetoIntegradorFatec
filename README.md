@@ -111,7 +111,7 @@ Estes são os requisitos de qualidade do sistema:
 - **RNF5 - Manutenibilidade:** O código deve ser bem documentado para facilitar futuras manutenções e evoluções.
 
 #### **3.4. Diagrama de Casos de Uso**
-![Diagrama de Classes](img/casosUso.jpg)
+![Diagrama de Casos de uso](img/casosUso.jpg)
 - `[Detalhado]`
 
 #### **3.5. Diagrama de Classes**
@@ -129,7 +129,7 @@ Estes são os requisitos de qualidade do sistema:
 `[A ser desenvolvido]`
 
 ### **7. Banco de Dados**
-`[A ser desenvolvido]`
+![Diagrama do banco de dados](img/Banco.png)
 
 ### **8. Protótipo**
 `[A ser desenvolvido]`
