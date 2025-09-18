@@ -127,43 +127,32 @@ Estes são os requisitos de qualidade do sistema:
 - **RNF5 - Manutenibilidade:** O código deve ser bem documentado para facilitar futuras manutenções e evoluções.
 
 #### **3.4. Diagrama de Casos de Uso**
+
 ![Diagrama de Casos de uso](img/casosUso.jpg)
 
 ## **CASOS DE USO DE ALTO NÍVEL**
 
- 
+- **Caso de Uso: Cadastrar nova dieta**
 
-* **Caso de Uso: Cadastrar nova dieta**
+> O usuário poderá cadastrar uma nova dieta. Quando cadastrada poderá ser exibida e relacionada ao paciente.
 
-> O usuário poderá cadastrar uma nova dieta. Quando cadastrada poderá ser exibida e relacionada ao paciente. 
+- **Caso de Uso: Cadastrar copeira**
 
- 
+> O usuário poderá cadastrar uma nova copeira no sistema, que será responsável pelas entregas das refeições.
 
-* **Caso de Uso: Cadastrar copeira** 
+- **Caso de Uso: Ler código de barras**
 
-> O usuário poderá cadastrar uma nova copeira no sistema, que será responsável pelas entregas das refeições. 
+> O usuário poderá escanear os códigos de barras da pulseira do paciente e da bandeja de refeição para garantir a entrega correta.
 
- 
+- **Caso de Uso: Ver relatórios**
 
-* **Caso de Uso: Ler código de barras** 
+> O usuário poderá visualizar relatórios gerados pelo sistema sobre o tempo de entrega, erros de validação e outros dados relevantes.
 
-> O usuário poderá escanear os códigos de barras da pulseira do paciente e da bandeja de refeição para garantir a entrega correta. 
+- **Caso de Uso: Cadastrar novo paciente**
 
- 
+> O usuário poderá cadastrar um novo paciente. Quando cadastrado poderá ser exibido e relacionado a copeira.
 
-* **Caso de Uso: Ver relatórios** 
-
-> O usuário poderá visualizar relatórios gerados pelo sistema sobre o tempo de entrega, erros de validação e outros dados relevantes. 
-
- 
-
-* **Caso de Uso: Cadastrar novo paciente** 
-
-> O usuário poderá cadastrar um novo paciente. Quando cadastrado poderá ser exibido e relacionado a copeira. 
-
- 
-
-* **Caso de Uso: Inserir dados para relatório** 
+- **Caso de Uso: Inserir dados para relatório**
 
 > O usuário poderá inserir os dados de cada entrega realizada (como horários de início e fim, códigos de barras escaneados, etc.) para geração de relatórios.
 
@@ -208,11 +197,14 @@ As Regras de Negócio são as políticas, restrições e lógicas específicas q
 - **RN4.2 - Integridade do Histórico:** Nenhum registro de entrega (bem-sucedida ou falha) pode ser excluído do sistema por um usuário com perfil de "Copeira".
 - **RN4.3 - Conteúdo do Relatório de Erros:** O relatório de erros de validação deve conter, no mínimo: a data e hora da ocorrência, o nome da copeira, o identificador do paciente e o identificador da bandeja envolvidos na falha.
 
+![Modelo De Negócio Canva](img/Canva-Pi.png)
+
 ### **6. Design (UI/UX)**
 
 `[A ser desenvolvido]`
 
 ### **7. Banco de Dados**
+
 ![Diagrama do banco de dados](img/Banco.png)
 
 ### **8. Protótipo**
