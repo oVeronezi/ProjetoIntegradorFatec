@@ -112,7 +112,44 @@ Estes são os requisitos de qualidade do sistema:
 
 #### **3.4. Diagrama de Casos de Uso**
 ![Diagrama de Casos de uso](img/casosUso.jpg)
-- `[Detalhado]`
+
+## **CASOS DE USO DE ALTO NÍVEL**
+
+ 
+
+* **Caso de Uso: Cadastrar nova dieta**
+
+> O usuário poderá cadastrar uma nova dieta. Quando cadastrada poderá ser exibida e relacionada ao paciente. 
+
+ 
+
+* **Caso de Uso: Cadastrar copeira** 
+
+> O usuário poderá cadastrar uma nova copeira no sistema, que será responsável pelas entregas das refeições. 
+
+ 
+
+* **Caso de Uso: Ler código de barras** 
+
+> O usuário poderá escanear os códigos de barras da pulseira do paciente e da bandeja de refeição para garantir a entrega correta. 
+
+ 
+
+* **Caso de Uso: Ver relatórios** 
+
+> O usuário poderá visualizar relatórios gerados pelo sistema sobre o tempo de entrega, erros de validação e outros dados relevantes. 
+
+ 
+
+* **Caso de Uso: Cadastrar novo paciente** 
+
+> O usuário poderá cadastrar um novo paciente. Quando cadastrado poderá ser exibido e relacionado a copeira. 
+
+ 
+
+* **Caso de Uso: Inserir dados para relatório** 
+
+> O usuário poderá inserir os dados de cada entrega realizada (como horários de início e fim, códigos de barras escaneados, etc.) para geração de relatórios.
 
 #### **3.5. Diagrama de Classes**
 ![Diagrama de Classes](img/DietaHospitalar.png)
