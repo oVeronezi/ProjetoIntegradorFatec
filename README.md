@@ -164,7 +164,41 @@ Estes são os requisitos de qualidade do sistema:
 
 ### **4. Estudo de Viabilidade**
 
-`[A ser desenvolvido]`
+#### **4.1 Viabilidade de Mercado**
+
+O projeto de Sistema de Monitoramento de Entrega de Refeições Hospitalares demonstra uma clara viabilidade de mercado. O problema atual, que se baseia na validação manual da entrega de bandejas, é um ponto frágil que pode levar a erros graves e comprometer a segurança do paciente. O público-alvo, hospitais de médio e grande porte, apresenta uma demanda crescente por soluções que melhorem a eficiência operacional e a experiência do paciente. A principal vantagem competitiva do projeto é a sua inovação, pois não foram identificados concorrentes diretos no mercado que ofereçam uma solução similar. Isso posiciona o sistema como um diferencial, com grande potencial para ser adotado por instituições de saúde que buscam modernizar seus processos.
+
+#### **4.2 Viabilidade de Recursos**
+
+A viabilidade de recursos para o desenvolvimento do protótipo é alta, com baixo custo e acesso facilitado a todas as tecnologias necessárias.
+
+Recursos Humanos: A equipe de desenvolvimento é composta por desenvolvedores C#, um designer de interface (UI/UX) para garantir um aplicativo intuitivo e um analista/testador para validar o sistema. Para a implementação, a própria equipe de desenvolvimento pode atuar no treinamento da equipe do hospital.
+
+Recursos Tecnológicos: O projeto será desenvolvido em C# e usará MongoDB, ferramentas com versões gratuitas, o que minimiza o custo de software. Em termos de hardware, a solução utiliza celulares com câmera para a leitura de códigos de barras, evitando a necessidade de hardware caro e de difícil manutenção. Os únicos custos de hardware seriam com as impressoras de etiquetas e pulseiras.
+
+Recursos Financeiros: O custo para o protótipo é considerado baixo. O maior investimento é o tempo de dedicação da equipe, já que as ferramentas de desenvolvimento são gratuitas e o hardware é de fácil acesso.
+
+#### **4.3 Viabilidade Operacional**
+
+A viabilidade operacional do projeto é comprovada por um fluxo de trabalho simples e eficiente que se integra facilmente às rotinas de hospitais. O sistema otimiza o processo de entrega de forma clara, garantindo rastreabilidade e segurança. O fluxo de trabalho proposto é:
+
+A copeira escaneia o código de barras da etiqueta da bandeja com o aplicativo no celular.
+
+O sistema registra o início da entrega e as informações da refeição.
+
+A copeira, no quarto do paciente, escaneia a pulseira de identificação do paciente.
+
+O sistema realiza a validação cruzada, confirmando que a bandeja e o paciente correspondem.
+
+A entrega é registrada como finalizada, marcando o tempo gasto e o profissional responsável.
+
+Esse processo simplificado não apenas reduz a chance de erros, mas também gera dados valiosos para a gestão de relatórios de eficiência.
+
+#### **4.4 Conclusão do Estudo de Viabilidade**
+
+Com base na análise completa, o projeto de Sistema de Monitoramento de Entrega de Refeições Hospitalares é altamente viável. Existe uma necessidade clara de mercado, a solução é inovadora e não enfrenta concorrência direta. Os recursos (humanos, tecnológicos e financeiros) para o desenvolvimento do protótipo estão disponíveis e são acessíveis. Operacionalmente, o sistema propõe um fluxo de trabalho simples e eficaz que resolve um problema real e crítico na rotina hospitalar.
+
+---
 
 ### **5. Regras de Negócio**
 
