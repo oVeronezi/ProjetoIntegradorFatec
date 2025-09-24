@@ -157,8 +157,14 @@ Estes são os requisitos de qualidade do sistema:
 > O usuário poderá inserir os dados de cada entrega realizada (como horários de início e fim, códigos de barras escaneados, etc.) para geração de relatórios.
 
 #### **3.5. Diagrama de Classes**
+O Diagrama de Classes é um componente essencial na arquitetura do nosso sistema, servindo como uma representação visual da estrutura e do design de banco de dados do projeto. Ele detalha as principais entidades, como Pacientes, Copeiras, Entregas e Dietas, e ilustra como elas se relacionam para garantir o fluxo de informações e as funcionalidades do sistema.
+
+Este diagrama foi concebido com base nos requisitos do projeto e na natureza do banco de dados NoSQL (MongoDB), proporcionando uma visão clara de como os dados serão organizados, persistidos e acessados pela aplicação.
 
 ![Diagrama de Classes](img/DietaHospitalar.png)
+
+## **Relacionamento entre as Classes**
+O diagrama de classes não apenas representa as entidades do sistema, mas também ilustra como elas se conectam e interagem. A natureza de cada relacionamento é definida pela sua cardinalidade e pelo tipo de associação, que neste projeto são
 
 ---
 
@@ -238,6 +244,18 @@ As Regras de Negócio são as políticas, restrições e lógicas específicas q
 `[A ser desenvolvido]`
 
 ### **7. Banco de Dados**
+
+O banco de dados do projeto foi arquitetado com base no MongoDB, uma tecnologia NoSQL. Diferentemente dos bancos de dados relacionais que utilizam tabelas e chaves estrangeiras, o MongoDB armazena dados em coleções de documentos, proporcionando maior flexibilidade e escalabilidade.
+
+O diagrama abaixo ilustra a estrutura das nossas coleções, que servem como contêineres para os documentos do sistema. As relações entre as coleções são estabelecidas por meio de referências, onde o ID de um documento é armazenado em outro para criar as conexões lógicas.
+
+> Pacientes: Coleção central que armazena os dados básicos dos pacientes, incluindo a referência para a dieta prescrita (idDieta).
+
+> Dietas: Coleção responsável por manter a definição detalhada de cada dieta, permitindo que a aplicação em C# associe um paciente a uma dieta sem duplicar informações.
+
+> Copeiras: Coleção que registra as informações de cada copeira, permitindo a rastreabilidade das entregas.
+
+> Entregas: Coleção crucial que registra cada evento de entrega, contendo referências para o paciente (idPaciente) e a copeira (idCopeira) correspondentes.
 
 ![Diagrama do banco de dados](img/Banco.png)
 
