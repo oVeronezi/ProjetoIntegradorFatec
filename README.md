@@ -164,7 +164,21 @@ Este diagrama foi concebido com base nos requisitos do projeto e na natureza do 
 ![Diagrama de Classes](img/DietaHospitalar.png)
 
 ## **Relacionamento entre as Classes**
-O diagrama de classes não apenas representa as entidades do sistema, mas também ilustra como elas se conectam e interagem. A natureza de cada relacionamento é definida pela sua cardinalidade e pelo tipo de associação, que neste projeto são
+O diagrama de classes não apenas representa as entidades do sistema, mas também ilustra como elas se conectam e interagem. A natureza de cada relacionamento é definida pela sua cardinalidade e pelo tipo de associação, que neste projeto são:
+
+> Agregação: Representa uma relação de "todo-parte" onde as partes (Entregas) podem existir independentemente do todo (Pacientes ou Copeiras). É uma relação mais fraca de dependência.
+
+> Associação: Uma relação simples que indica que as classes se comunicam entre si. Não há uma dependência de ciclo de vida, ou seja, uma classe pode existir sem a outra.
+
+Com base nisso, os relacionamentos no nosso projeto são:
+
+> Pacientes e Entregas (Agregação): Um Paciente pode ter várias Entregas ao longo do tempo. As entregas, por sua vez, estão vinculadas a um único paciente. Mesmo se o paciente for removido, o registro das entregas permanece para fins de histórico e relatórios.
+
+> Copeiras e Entregas (Agregação): Uma Copeira realiza várias Entregas. Assim como no caso anterior, o registro da entrega é mantido mesmo se a copeira for removida.
+
+> Pacientes e Dietas (Associação): Um Paciente tem uma Dieta prescrita. Essa é uma relação direta, mas a Dieta também existe de forma independente na sua própria classe e pode ser associada a outros pacientes.
+
+> Relatórios e as demais classes (Associação): A classe Relatórios não é uma parte intrínseca das outras classes. Ela apenas as utiliza (associa-se a elas) para coletar e processar dados, a fim de gerar as informações necessárias para a gestão do sistema.
 
 ---
 
