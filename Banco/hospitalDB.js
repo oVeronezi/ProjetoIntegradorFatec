@@ -1,5 +1,5 @@
 // Acessa o banco de dados. Se ele não existir, o MongoDB o criará.
-use hospitalDB;
+// use hospitalDB;
 
 // ----- 1. POPULAÇÃO DAS COLEÇÕES INICIAIS -----
 
