@@ -79,7 +79,55 @@ db.Entregas.insertMany([
   }
 ]);
 
-// db.getCollection("Copeiras").find({})
-// db.getCollection("Dietas").find({})
-// db.getCollection("Entregas").find({})
-// db.getCollection("Pacientes").find({})
+ db.getCollection("Copeiras").find({})
+ db.getCollection("Dietas").find({})
+ db.getCollection("Entregas").find({})
+ db.getCollection("Pacientes").find({})
+ 
+ 
+ 
+ // Consulta para obter todos os dados de um paciente específico
+db.Pacientes.aggregate([
+  {
+    // Etapa 1: Encontra o paciente desejado pelo ID
+    $match: {
+      _id: pacienteCarlos.insertedId
+    }
+  },
+  {
+    // Etapa 2: Une a coleção Dietas com Pacientes para trazer os detalhes da dieta
+    $lookup: {
+      from: "Dietas",           // Coleção que queremos unir
+      localField: "idDieta",      // Campo do Paciente
+      foreignField: "_id",        // Campo da Dieta
+      as: "detalhesDieta"      // Nome do novo campo que conterá o documento da dieta
+    }
+  },
+  {
+    // Etapa 3: "Achata" o array de resultados da dieta (pois é uma relação 1:1)
+    $unwind: "$detalhesDieta"
+  },
+  {
+    // Etapa 4: Une a coleção Entregas para buscar o histórico do paciente
+    $lookup: {
+      from: "Entregas",           // Coleção a ser unida
+      localField: "_id",          // Campo do Paciente (seu próprio ID)
+      foreignField: "idPaciente",   // Campo da Entrega (a referência ao paciente)
+      as: "historicoEntregas",    // Nome do novo campo
+      pipeline: [                 // Pipeline aninhado para unir a copeira em cada entrega
+        {
+          $lookup: {
+            from: "Copeiras",     // Coleção de Copeiras
+            localField: "idCopeira",  // Campo da Entrega
+            foreignField: "_id",    // Campo da Copeira
+            as: "copeiraResponsavel" // Nome do novo campo
+          }
+        },
+        {
+          // Etapa aninhada: "Achata" o array da copeira para cada entrega
+          $unwind: "$copeiraResponsavel"
+        }
+      ]
+    }
+  }
+]);
