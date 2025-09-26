@@ -115,9 +115,9 @@ Estes são os requisitos que o sistema deve cumprir para atender às necessidade
 - **RF7:** O sistema deve gerar relatórios com o tempo médio de entrega.
 - **RF8:** O sistema deve gerar relatórios de erros de validação.
 - **RF9:** O sistema deve manter um histórico de entregas por paciente.
-- **RF10:** O sistema deve permitir cadastrar Paciente.
-- **RF11:** O sistema deve permitir cadastrar Dieta.
-- **RF12:** O sistema deve permitir cadastrar Copeira.
+- **RF10:** O sistema deve permitir CRUD de Paciente.
+- **RF11:** O sistema deve permitir CRUD de Dieta.
+- **RF12:** O sistema deve permitir CRUD de Copeira.
 
 #### **3.3. Requisitos Não Funcionais**
 
