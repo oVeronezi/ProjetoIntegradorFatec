@@ -118,7 +118,7 @@ Estes são os requisitos que o sistema deve cumprir para atender às necessidade
 - **RF10:** O sistema deve permitir CRUD de Paciente.
 - **RF11:** O sistema deve permitir CRUD de Dieta.
 - **RF12:** O sistema deve permitir CRUD de Copeira.
-
+ 
 #### **3.3. Requisitos Não Funcionais**
 
 Estes são os requisitos de qualidade do sistema:
