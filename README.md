@@ -115,7 +115,10 @@ Estes são os requisitos que o sistema deve cumprir para atender às necessidade
 - **RF7:** O sistema deve gerar relatórios com o tempo médio de entrega.
 - **RF8:** O sistema deve gerar relatórios de erros de validação.
 - **RF9:** O sistema deve manter um histórico de entregas por paciente.
-
+- **RF10:** O sistema deve permitir CRUD de Paciente.
+- **RF11:** O sistema deve permitir CRUD de Dieta.
+- **RF12:** O sistema deve permitir CRUD de Copeira.
+ 
 #### **3.3. Requisitos Não Funcionais**
 
 Estes são os requisitos de qualidade do sistema:
@@ -157,14 +160,68 @@ Estes são os requisitos de qualidade do sistema:
 > O usuário poderá inserir os dados de cada entrega realizada (como horários de início e fim, códigos de barras escaneados, etc.) para geração de relatórios.
 
 #### **3.5. Diagrama de Classes**
+O Diagrama de Classes é um componente essencial na arquitetura do nosso sistema, servindo como uma representação visual da estrutura e do design de banco de dados do projeto. Ele detalha as principais entidades, como Pacientes, Copeiras, Entregas e Dietas, e ilustra como elas se relacionam para garantir o fluxo de informações e as funcionalidades do sistema.
+
+Este diagrama foi concebido com base nos requisitos do projeto e na natureza do banco de dados NoSQL (MongoDB), proporcionando uma visão clara de como os dados serão organizados, persistidos e acessados pela aplicação.
 
 ![Diagrama de Classes](img/DietaHospitalar.png)
+
+## **Relacionamento entre as Classes**
+O diagrama de classes não apenas representa as entidades do sistema, mas também ilustra como elas se conectam e interagem. A natureza de cada relacionamento é definida pela sua cardinalidade e pelo tipo de associação, que neste projeto são:
+
+> Agregação: Representa uma relação de "todo-parte" onde as partes (Entregas) podem existir independentemente do todo (Pacientes ou Copeiras). É uma relação mais fraca de dependência.
+
+> Associação: Uma relação simples que indica que as classes se comunicam entre si. Não há uma dependência de ciclo de vida, ou seja, uma classe pode existir sem a outra.
+
+Com base nisso, os relacionamentos no nosso projeto são:
+
+> Pacientes e Entregas (Agregação): Um Paciente pode ter várias Entregas ao longo do tempo. As entregas, por sua vez, estão vinculadas a um único paciente. Mesmo se o paciente for removido, o registro das entregas permanece para fins de histórico e relatórios.
+
+> Copeiras e Entregas (Agregação): Uma Copeira realiza várias Entregas. Assim como no caso anterior, o registro da entrega é mantido mesmo se a copeira for removida.
+
+> Pacientes e Dietas (Associação): Um Paciente tem uma Dieta prescrita. Essa é uma relação direta, mas a Dieta também existe de forma independente na sua própria classe e pode ser associada a outros pacientes.
+
+> Relatórios e as demais classes (Associação): A classe Relatórios não é uma parte intrínseca das outras classes. Ela apenas as utiliza (associa-se a elas) para coletar e processar dados, a fim de gerar as informações necessárias para a gestão do sistema.
 
 ---
 
 ### **4. Estudo de Viabilidade**
 
-`[A ser desenvolvido]`
+#### **4.1 Viabilidade de Mercado**
+
+O projeto de Sistema de Monitoramento de Entrega de Refeições Hospitalares demonstra uma clara viabilidade de mercado. O problema atual, que se baseia na validação manual da entrega de bandejas, é um ponto frágil que pode levar a erros graves e comprometer a segurança do paciente. O público-alvo, hospitais de médio e grande porte, apresenta uma demanda crescente por soluções que melhorem a eficiência operacional e a experiência do paciente. A principal vantagem competitiva do projeto é a sua inovação, pois não foram identificados concorrentes diretos no mercado que ofereçam uma solução similar. Isso posiciona o sistema como um diferencial, com grande potencial para ser adotado por instituições de saúde que buscam modernizar seus processos.
+
+#### **4.2 Viabilidade de Recursos**
+
+A viabilidade de recursos para o desenvolvimento do protótipo é alta, com baixo custo e acesso facilitado a todas as tecnologias necessárias.
+
+Recursos Humanos: A equipe de desenvolvimento é composta por desenvolvedores C#, um designer de interface (UI/UX) para garantir um aplicativo intuitivo e um analista/testador para validar o sistema. Para a implementação, a própria equipe de desenvolvimento pode atuar no treinamento da equipe do hospital.
+
+Recursos Tecnológicos: O projeto será desenvolvido em C# e usará MongoDB, ferramentas com versões gratuitas, o que minimiza o custo de software. Em termos de hardware, a solução utiliza celulares com câmera para a leitura de códigos de barras, evitando a necessidade de hardware caro e de difícil manutenção. Os únicos custos de hardware seriam com as impressoras de etiquetas e pulseiras.
+
+Recursos Financeiros: O custo para o protótipo é considerado baixo. O maior investimento é o tempo de dedicação da equipe, já que as ferramentas de desenvolvimento são gratuitas e o hardware é de fácil acesso.
+
+#### **4.3 Viabilidade Operacional**
+
+A viabilidade operacional do projeto é comprovada por um fluxo de trabalho simples e eficiente que se integra facilmente às rotinas de hospitais. O sistema otimiza o processo de entrega de forma clara, garantindo rastreabilidade e segurança. O fluxo de trabalho proposto é:
+
+A copeira escaneia o código de barras da etiqueta da bandeja com o aplicativo no celular.
+
+O sistema registra o início da entrega e as informações da refeição.
+
+A copeira, no quarto do paciente, escaneia a pulseira de identificação do paciente.
+
+O sistema realiza a validação cruzada, confirmando que a bandeja e o paciente correspondem.
+
+A entrega é registrada como finalizada, marcando o tempo gasto e o profissional responsável.
+
+Esse processo simplificado não apenas reduz a chance de erros, mas também gera dados valiosos para a gestão de relatórios de eficiência.
+
+#### **4.4 Conclusão do Estudo de Viabilidade**
+
+Com base na análise completa, o projeto de Sistema de Monitoramento de Entrega de Refeições Hospitalares é altamente viável. Existe uma necessidade clara de mercado, a solução é inovadora e não enfrenta concorrência direta. Os recursos (humanos, tecnológicos e financeiros) para o desenvolvimento do protótipo estão disponíveis e são acessíveis. Operacionalmente, o sistema propõe um fluxo de trabalho simples e eficaz que resolve um problema real e crítico na rotina hospitalar.
+
+---
 
 ### **5. Regras de Negócio**
 
@@ -204,6 +261,18 @@ As Regras de Negócio são as políticas, restrições e lógicas específicas q
 `[A ser desenvolvido]`
 
 ### **7. Banco de Dados**
+
+O banco de dados do projeto foi arquitetado com base no MongoDB, uma tecnologia NoSQL. Diferentemente dos bancos de dados relacionais que utilizam tabelas e chaves estrangeiras, o MongoDB armazena dados em coleções de documentos, proporcionando maior flexibilidade e escalabilidade.
+
+O diagrama abaixo ilustra a estrutura das nossas coleções, que servem como contêineres para os documentos do sistema. As relações entre as coleções são estabelecidas por meio de referências, onde o ID de um documento é armazenado em outro para criar as conexões lógicas.
+
+> Pacientes: Coleção central que armazena os dados básicos dos pacientes, incluindo a referência para a dieta prescrita (idDieta).
+
+> Dietas: Coleção responsável por manter a definição detalhada de cada dieta, permitindo que a aplicação em C# associe um paciente a uma dieta sem duplicar informações.
+
+> Copeiras: Coleção que registra as informações de cada copeira, permitindo a rastreabilidade das entregas.
+
+> Entregas: Coleção crucial que registra cada evento de entrega, contendo referências para o paciente (idPaciente) e a copeira (idCopeira) correspondentes.
 
 ![Diagrama do banco de dados](img/Banco.png)
 
