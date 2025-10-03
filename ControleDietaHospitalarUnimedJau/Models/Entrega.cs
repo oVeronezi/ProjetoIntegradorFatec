@@ -8,7 +8,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
     {
         public int IdEntrega { get; set; }
         public DateTime HoraInicio { get; set; }
-        public DateTime HoraFim {  get; set; }
+        public DateTime? HoraFim { get; set; }  // ADICIONAR ? AQUI
         public string Status { get; set; }
         public string Observacao { get; set; }
         public int PacienteId { get; set; }
@@ -18,13 +18,13 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public int? DietaId { get; set; }
         public Dieta Dieta { get; set; }
 
-        public TimeSpan CalcularTempoEntrega()
+        public TimeSpan? CalcularTempoEntrega()  // TAMBÉM TORNAR nullable
         {
-            if(HoraFim > HoraInicio)
+            if (HoraFim.HasValue && HoraFim.Value > HoraInicio)
             {
-                return HoraFim - HoraInicio;
+                return HoraFim.Value - HoraInicio;
             }
-            return TimeSpan.Zero;
+            return null;
         }
     }
 }

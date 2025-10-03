@@ -150,7 +150,7 @@ namespace SistemaGerenciamentoDietas.Services
                 viewModel.TotalErros = entregasComErro;
 
                 var entregasComTempo = entregasPaciente
-                    .Where(e => e.HoraFim && e.Status == "Concluída")
+                    .Where(e => e.HoraFim.HasValue && e.Status == "Concluída")
                     .ToList();
 
                 if (entregasComTempo.Any())
