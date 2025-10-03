@@ -7,32 +7,20 @@
       "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\relatorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\relatorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\entrega.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\entrega.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\dieta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\dieta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\contextmongodb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\contextmongodb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\entrega.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\entrega.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\relatorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\relatorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\relatorioviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -43,8 +31,20 @@
       "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\bandeja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\copeira.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\copeira.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\dieta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|solutionrelative:models\\dieta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{706AE0E9-CF28-4D97-A796-57830312B38C}|ControleDietaHospitalarUnimedJau.csproj|c:\\users\\franc\\onedrive\\\u00E1rea de trabalho\\projetointegradorfatec\\controledietahospitalarunimedjau\\models\\paciente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -70,7 +70,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -78,12 +78,11 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-03T11:23:09.72Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-03T11:23:09.72Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "ContextMongodb.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\ContextMongodb.cs",
               "RelativeDocumentMoniker": "Models\\ContextMongodb.cs",
@@ -91,12 +90,11 @@
               "RelativeToolTip": "Models\\ContextMongodb.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAAwBwAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-03T11:22:13.413Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-03T11:22:13.413Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Entrega.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\Entrega.cs",
               "RelativeDocumentMoniker": "Models\\Entrega.cs",
@@ -104,12 +102,11 @@
               "RelativeToolTip": "Models\\Entrega.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T15:06:26.608Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T15:06:26.608Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Relatorio.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\Relatorio.cs",
               "RelativeDocumentMoniker": "Models\\Relatorio.cs",
@@ -117,12 +114,11 @@
               "RelativeToolTip": "Models\\Relatorio.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAKcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T15:04:08.09Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T15:04:08.09Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
               "Title": "RelatorioViewModel.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\RelatorioViewModel.cs",
               "RelativeDocumentMoniker": "Models\\RelatorioViewModel.cs",
@@ -130,12 +126,11 @@
               "RelativeToolTip": "Models\\RelatorioViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T15:45:44.92Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T15:45:44.92Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 6,
               "Title": "Bandeja.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\Bandeja.cs",
               "RelativeDocumentMoniker": "Models\\Bandeja.cs",
@@ -143,8 +138,7 @@
               "RelativeToolTip": "Models\\Bandeja.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:57:09.436Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T14:57:09.436Z"
             },
             {
               "$type": "Document",
@@ -161,7 +155,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Privacy.cshtml",
@@ -169,12 +163,11 @@
               "RelativeToolTip": "Views\\Home\\Privacy.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-03T11:54:14.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-03T11:54:14.522Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
@@ -182,12 +175,11 @@
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-03T11:54:16.751Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-03T11:54:16.751Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "Copeira.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\Copeira.cs",
               "RelativeDocumentMoniker": "Models\\Copeira.cs",
@@ -195,12 +187,11 @@
               "RelativeToolTip": "Models\\Copeira.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAwwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:53:35.957Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T14:53:35.957Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "Dieta.cs",
               "DocumentMoniker": "C:\\Users\\franc\\OneDrive\\\u00C1rea de Trabalho\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\Models\\Dieta.cs",
               "RelativeDocumentMoniker": "Models\\Dieta.cs",
@@ -208,8 +199,7 @@
               "RelativeToolTip": "Models\\Dieta.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T13:49:56.712Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T13:49:56.712Z"
             },
             {
               "$type": "Document",
@@ -221,8 +211,7 @@
               "RelativeToolTip": "Models\\Paciente.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAcwCAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:05:52.704Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T14:05:52.704Z"
             }
           ]
         }

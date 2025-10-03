@@ -1,0 +1,29 @@
+# Arquivos de usuário
+#
+# Ignorar arquivos temporários e de configuração do Visual Studio:
+*.suo
+*.user
+*.useros
+*.userprefs
+
+# Pastas de cache e build
+#
+# A pasta principal de cache do Visual Studio (CAUSA DO SEU ERRO)
+.vs/
+# Arquivos de build (binários)
+[Bb]in/
+[Oo]bj/
+# Nuget
+*.lock.json
+# Pacotes NuGet (pastas de restore)
+packages/
+
+# Arquivos de backup
+*.bak
+*~
+# Logs e testes
+log.txt
+[Tt]est[Rr]esults/
+
+# Outras configurações (como segredos e tokens, que nunca devem ser versionados)
+*.localsettings
