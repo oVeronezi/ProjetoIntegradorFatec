@@ -8,7 +8,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class Copeira
     {
-        public int IdCopeira { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "O nome do funcionário é obrigatório")]
         public string Nome { get; set; }
         public ICollection<Entrega> Entregas { get; set; }

@@ -6,7 +6,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class Entrega
     {
-        public int IdEntrega { get; set; }
+        public int Id { get; set; }
         public DateTime HoraInicio { get; set; }
         public DateTime? HoraFim { get; set; }  // ADICIONAR ? AQUI
         public string Status { get; set; }

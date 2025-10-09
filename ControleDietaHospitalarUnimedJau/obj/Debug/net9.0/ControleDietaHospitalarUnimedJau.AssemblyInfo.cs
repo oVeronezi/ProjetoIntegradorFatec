@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ControleDietaHospitalarUnimedJau")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+372e2df69fb1a52ac0f3d78f10f9ae5ee5fa40fd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52fe1ce7c8391c69dd06d886787710982f01d2ff")]
 [assembly: System.Reflection.AssemblyProductAttribute("ControleDietaHospitalarUnimedJau")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ControleDietaHospitalarUnimedJau")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
