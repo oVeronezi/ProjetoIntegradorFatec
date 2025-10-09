@@ -26,7 +26,7 @@ namespace ControleDietaHospitalarUnimedJau
 
             app.UseRouting();
             app.UseAuthorization();
-
+            // Rota
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

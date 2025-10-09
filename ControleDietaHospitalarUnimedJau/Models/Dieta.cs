@@ -6,6 +6,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class Dieta
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "O nome da dieta é obrigatório")]
         [StringLength(100)]
         public string NomeDieta { get; set; }

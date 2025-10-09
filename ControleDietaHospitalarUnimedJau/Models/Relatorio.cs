@@ -24,7 +24,7 @@ namespace SistemaGerenciamentoDietas.Services
         // Gera relatório de tempo médio de entrega por copeira
         public RelatorioViewModel GerarRelatorioTempoMedioDieta(int idCopeira)
         {
-            var copeira = _copeiras.FirstOrDefault(c => c.IdCopeira == idCopeira);
+            var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 
             var entregasCopeira = _entregas
                 .Where(e => e.CopeiraId == idCopeira && e.Status == "Concluída")
@@ -111,7 +111,7 @@ namespace SistemaGerenciamentoDietas.Services
         // Gera relatório de histórico de um paciente
         public RelatorioViewModel GerarRelatorioHistoricoPaciente(int idPaciente)
         {
-            var paciente = _pacientes.FirstOrDefault(p => p.IdPaciente == idPaciente);
+            var paciente = _pacientes.FirstOrDefault(p => p.Id == idPaciente);
 
             if (paciente == null)
             {

@@ -15,5 +15,9 @@ namespace ControleDietaHospitalarUnimedJau.Data
         }
 
         public DbSet<ControleDietaHospitalarUnimedJau.Models.Bandeja> Bandeja { get; set; } = default!;
+        public DbSet<ControleDietaHospitalarUnimedJau.Models.Paciente> Paciente { get; set; } = default!;
+        public DbSet<ControleDietaHospitalarUnimedJau.Models.Copeira> Copeira { get; set; } = default!;
+        public DbSet<ControleDietaHospitalarUnimedJau.Models.Dieta> Dieta { get; set; } = default!;
+        public DbSet<ControleDietaHospitalarUnimedJau.Models.Entrega> Entrega { get; set; } = default!;
     }
 }

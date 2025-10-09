@@ -15,8 +15,8 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [Required(ErrorMessage = "O código da pulseira é obrigatório")]
         [StringLength(50)]
         public string CodPulseira { get; set; } // alterar aqui caso o código seja apenas de números
-        public int? DietaId { get; set; }
-        public Dieta Dieta { get; set; }
+        //public int? DietaId { get; set; }
+        public Dieta DietaId { get; set; }
 
         public ICollection<Entrega> Entregas { get; set; }
         public Paciente()
