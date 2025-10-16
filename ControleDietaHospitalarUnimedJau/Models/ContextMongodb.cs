@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MongoDB.Driver;
 
-namespace ProjetoMongoDb.Models
+namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class ContextMongodb
     {
@@ -31,6 +31,10 @@ namespace ProjetoMongoDb.Models
             }
 
         }//fim do contrutor
+        public IMongoCollection<Dieta> Dietas { get
+            {
+                return _database.GetCollection<Dieta>("Dietas");
+            } }
 
     }//fim da classe
 }

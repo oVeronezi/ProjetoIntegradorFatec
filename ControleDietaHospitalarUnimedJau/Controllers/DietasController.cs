@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ControleDietaHospitalarUnimedJau.Data;
+using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
-
+using ControleDietaHospitalarUnimedJau.Data;
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
     public class DietasController : Controller
     {
-        private readonly ControleDietaHospitalarUnimedJauContext _context;
+        private readonly ContextMongodb _context;
 
-        public DietasController(ControleDietaHospitalarUnimedJauContext context)
+        public DietasController(ContextMongodb context)
         {
             _context = context;
         }
@@ -22,25 +25,25 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Dietas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dieta.ToListAsync());
+            return View(await _context.Dietas.Find(_ => true).ToListAsync());
         }
 
         // GET: Dietas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dieta = await _context.Dieta
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dieta == null)
+            var Dieta = await _context.Dietas
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (Dieta == null)
             {
                 return NotFound();
             }
 
-            return View(dieta);
+            return View(Dieta);
         }
 
         // GET: Dietas/Create
@@ -49,31 +52,31 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View();
         }
 
-        // POST: Dietas/Create
+        // POST: Eventos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NomeDieta,ItensAlimentares")] Dieta dieta)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dieta);
-                await _context.SaveChangesAsync();
+                dieta.Id = Guid.NewGuid();
+                await _context.Dietas.InsertOneAsync(dieta);
                 return RedirectToAction(nameof(Index));
             }
             return View(dieta);
         }
 
         // GET: Dietas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dieta = await _context.Dieta.FindAsync(id);
+            var dieta = await _context.Dietas
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
             if (dieta == null)
             {
                 return NotFound();
@@ -82,11 +85,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // POST: Dietas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeDieta,ItensAlimentares")] Dieta dieta)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta,ItensAlimentares")] Dieta dieta)
         {
             if (id != dieta.Id)
             {
@@ -97,8 +97,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             {
                 try
                 {
-                    _context.Update(dieta);
-                    await _context.SaveChangesAsync();
+                    await _context.Dietas.ReplaceOneAsync(m => m.Id == dieta.Id, dieta);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,42 +115,37 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(dieta);
         }
 
-        // GET: Dietas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Dietas/Delete/
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dieta = await _context.Dieta
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dieta == null)
+            var evento = await _context.Dietas.Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (evento == null)
             {
                 return NotFound();
             }
 
-            return View(dieta);
+            return View(evento);
         }
-
         // POST: Dietas/Delete/5
+        // POST: Eventos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var dieta = await _context.Dieta.FindAsync(id);
-            if (dieta != null)
-            {
-                _context.Dieta.Remove(dieta);
-            }
+            await _context.Dietas.DeleteOneAsync(u => u.Id == id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DietaExists(int id)
+        private bool DietaExists(Guid id)
         {
-            return _context.Dieta.Any(e => e.Id == id);
+            return _context.Dietas.Find(e => e.Id == id).Any();
         }
     }
 }

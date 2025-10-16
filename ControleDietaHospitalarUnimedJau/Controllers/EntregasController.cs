@@ -51,7 +51,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         public IActionResult Create()
         {
             ViewData["CopeiraId"] = new SelectList(_context.Copeira, "Id", "Nome");
-            ViewData["DietaId"] = new SelectList(_context.Dieta, "Id", "NomeDieta");
+            ViewData["DietaId"] = new SelectList(_context.Dietas, "Id", "NomeDieta");
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "CodPulseira");
             return View();
         }
@@ -70,7 +70,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CopeiraId"] = new SelectList(_context.Copeira, "Id", "Nome", entrega.CopeiraId);
-            ViewData["DietaId"] = new SelectList(_context.Dieta, "Id", "NomeDieta", entrega.DietaId);
+            ViewData["DietaId"] = new SelectList(_context.Dietas, "Id", "NomeDieta", entrega.DietaId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "CodPulseira", entrega.PacienteId);
             return View(entrega);
         }
@@ -89,7 +89,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
             ViewData["CopeiraId"] = new SelectList(_context.Copeira, "Id", "Nome", entrega.CopeiraId);
-            ViewData["DietaId"] = new SelectList(_context.Dieta, "Id", "NomeDieta", entrega.DietaId);
+            ViewData["DietaId"] = new SelectList(_context.Dietas, "Id", "NomeDieta", entrega.DietaId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "CodPulseira", entrega.PacienteId);
             return View(entrega);
         }
@@ -127,7 +127,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CopeiraId"] = new SelectList(_context.Copeira, "Id", "Nome", entrega.CopeiraId);
-            ViewData["DietaId"] = new SelectList(_context.Dieta, "Id", "NomeDieta", entrega.DietaId);
+            ViewData["DietaId"] = new SelectList(_context.Dietas, "Id", "NomeDieta", entrega.DietaId);
             ViewData["PacienteId"] = new SelectList(_context.Paciente, "Id", "CodPulseira", entrega.PacienteId);
             return View(entrega);
         }

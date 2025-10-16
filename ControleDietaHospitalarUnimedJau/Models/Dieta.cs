@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class Dieta
     {
-        public int Id { get; set; }
-        [Required(ErrorMessage = "O nome da dieta é obrigatório")]
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
+        [Required]
+        public Guid Id { get; set; }
+        [Required]
         [StringLength(100)]
         public string NomeDieta { get; set; }
         public List<string> ItensAlimentares { get; set; }

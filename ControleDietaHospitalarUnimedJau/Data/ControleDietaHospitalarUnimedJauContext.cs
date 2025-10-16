@@ -14,10 +14,10 @@ namespace ControleDietaHospitalarUnimedJau.Data
         {
         }
 
-        public DbSet<ControleDietaHospitalarUnimedJau.Models.Bandeja> Bandeja { get; set; } = default!;
-        public DbSet<ControleDietaHospitalarUnimedJau.Models.Paciente> Paciente { get; set; } = default!;
-        public DbSet<ControleDietaHospitalarUnimedJau.Models.Copeira> Copeira { get; set; } = default!;
-        public DbSet<ControleDietaHospitalarUnimedJau.Models.Dieta> Dieta { get; set; } = default!;
-        public DbSet<ControleDietaHospitalarUnimedJau.Models.Entrega> Entrega { get; set; } = default!;
+        public DbSet<Bandeja> Bandeja { get; set; } = default!;
+        public DbSet<Paciente> Paciente { get; set; } = default!;
+        public DbSet<Copeira> Copeira { get; set; } = default!;
+        public DbSet<Dieta> Dietas { get; set; } = default!;
+        public DbSet<Entrega> Entrega { get; set; } = default!;
     }
 }
