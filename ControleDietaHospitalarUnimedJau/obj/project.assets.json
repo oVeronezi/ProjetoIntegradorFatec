@@ -8515,23 +8515,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ASUS\\.nuget\\packages\\": {},
+    "C:\\Users\\franc\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ASUS\\OneDrive\\Documentos\\PI-Unimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
+      "projectUniqueName": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\PiUnimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
       "projectName": "ControleDietaHospitalarUnimedJau",
-      "projectPath": "C:\\Users\\ASUS\\OneDrive\\Documentos\\PI-Unimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
-      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ASUS\\OneDrive\\Documentos\\PI-Unimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\obj\\",
+      "projectPath": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\PiUnimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
+      "packagesPath": "C:\\Users\\franc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\PiUnimed\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\franc\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -31,10 +31,14 @@ namespace ControleDietaHospitalarUnimedJau.Models
             }
 
         }//fim do contrutor
-        public IMongoCollection<Dieta> Dietas { get
+        public IMongoCollection<Dieta> Dietas 
+        { 
+            get
             {
                 return _database.GetCollection<Dieta>("Dietas");
-            } }
+            }
+            
+        }
 
     }//fim da classe
 }

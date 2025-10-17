@@ -123,13 +123,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var evento = await _context.Dietas.Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (evento == null)
+            var dieta = await _context.Dietas.Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (dieta == null)
             {
                 return NotFound();
             }
 
-            return View(evento);
+            return View(dieta);
         }
         // POST: Dietas/Delete/5
         // POST: Eventos/Delete/5
