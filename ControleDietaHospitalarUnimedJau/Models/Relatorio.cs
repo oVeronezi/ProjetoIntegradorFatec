@@ -22,7 +22,7 @@ namespace SistemaGerenciamentoDietas.Services
         }
 
         // Gera relatório de tempo médio de entrega por copeira
-        public RelatorioViewModel GerarRelatorioTempoMedioDieta(int idCopeira)
+        public RelatorioViewModel GerarRelatorioTempoMedioDieta(Guid idCopeira)
         {
             var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 

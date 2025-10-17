@@ -132,7 +132,6 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(dieta);
         }
         // POST: Dietas/Delete/5
-        // POST: Eventos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]

@@ -40,5 +40,14 @@ namespace ControleDietaHospitalarUnimedJau.Models
             
         }
 
+        public IMongoCollection<Copeira> Copeiras
+        {
+            get
+            {
+                return _database.GetCollection<Copeira>("Copeiras");
+            }
+
+        }
+
     }//fim da classe
 }

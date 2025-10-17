@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ControleDietaHospitalarUnimedJau.Data;
+using ControleDietaHospitalarUnimedJau.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ControleDietaHospitalarUnimedJau.Data;
-using ControleDietaHospitalarUnimedJau.Models;
+using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
     public class CopeirasController : Controller
     {
-        private readonly ControleDietaHospitalarUnimedJauContext _context;
+        private readonly ContextMongodb _context;
 
-        public CopeirasController(ControleDietaHospitalarUnimedJauContext context)
+        public CopeirasController(ContextMongodb context)
         {
             _context = context;
         }
@@ -22,19 +24,19 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Copeiras
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Copeira.ToListAsync());
+            return View(await _context.Dietas.Find(_ => true).ToListAsync());
         }
 
         // GET: Copeiras/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var copeira = await _context.Copeira
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var copeira = await _context.Copeiras
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
             if (copeira == null)
             {
                 return NotFound();
@@ -53,27 +55,28 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+ 
         public async Task<IActionResult> Create([Bind("Id,Nome")] Copeira copeira)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(copeira);
-                await _context.SaveChangesAsync();
+                copeira.Id = Guid.NewGuid();
+                await _context.Copeiras.InsertOneAsync(copeira);
                 return RedirectToAction(nameof(Index));
             }
             return View(copeira);
         }
 
+
         // GET: Copeiras/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var copeira = await _context.Copeira.FindAsync(id);
+            var copeira = await _context.Copeiras.Find(m => m.Id == id).FirstOrDefaultAsync();
             if (copeira == null)
             {
                 return NotFound();
@@ -81,12 +84,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(copeira);
         }
 
+
         // POST: Copeiras/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Copeira copeira)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome")] Copeira copeira)
         {
             if (id != copeira.Id)
             {
@@ -97,8 +101,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             {
                 try
                 {
-                    _context.Update(copeira);
-                    await _context.SaveChangesAsync();
+                    await _context.Copeiras.ReplaceOneAsync(m => m.Id == copeira.Id, copeira);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -115,17 +118,19 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             }
             return View(copeira);
         }
+    
+
 
         // GET: Copeiras/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var copeira = await _context.Copeira
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var copeira = await _context.Copeiras
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
             if (copeira == null)
             {
                 return NotFound();
@@ -137,21 +142,16 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // POST: Copeiras/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var copeira = await _context.Copeira.FindAsync(id);
-            if (copeira != null)
-            {
-                _context.Copeira.Remove(copeira);
-            }
+            await _context.Copeiras.DeleteOneAsync(u => u.Id == id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CopeiraExists(int id)
+        private bool CopeiraExists(Guid id)
         {
-            return _context.Copeira.Any(e => e.Id == id);
+            return _context.Copeiras.Find(e => e.Id == id).Any();
         }
     }
 }
