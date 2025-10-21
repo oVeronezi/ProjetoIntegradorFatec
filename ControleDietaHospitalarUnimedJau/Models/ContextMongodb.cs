@@ -30,16 +30,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 throw new Exception("Não foi possível conectar Mongodb");
             }
 
-        }//fim do contrutor
-        public IMongoCollection<Dieta> Dietas 
-        { 
-            get
-            {
-                return _database.GetCollection<Dieta>("Dietas");
-            }
-            
-        }
-
+        }//fim do construtor
         public IMongoCollection<Copeira> Copeiras
         {
             get
@@ -48,6 +39,28 @@ namespace ControleDietaHospitalarUnimedJau.Models
             }
 
         }
-
+        public IMongoCollection<Dieta> Dietas 
+        { 
+            get
+            {
+                return _database.GetCollection<Dieta>("Dietas");
+            }
+            
+        }
+        public IMongoCollection<Entrega> Entregas
+        {
+            get
+            {
+                return _database.GetCollection<Entrega>("Entregas");
+            }
+        }
+        public IMongoCollection<Paciente> Pacientes
+        {
+            get
+            {
+                return _database.GetCollection<Paciente>("Pacientes");
+            }
+        }
+        
     }//fim da classe
 }

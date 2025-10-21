@@ -26,7 +26,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Pacientes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,NumQuarto,CodPulseira")] Paciente paciente)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira")] Paciente paciente)
         {
             if (id != paciente.Id)
             {
@@ -117,7 +117,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Pacientes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
@@ -149,7 +149,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PacienteExists(int id)
+        private bool PacienteExists(Guid id)
         {
             return _context.Paciente.Any(e => e.Id == id);
         }

@@ -27,7 +27,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Entregas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
@@ -76,7 +76,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Entregas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -99,7 +99,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,HoraInicio,HoraFim,Status,Observacao,PacienteId,CopeiraId,DietaId")] Entrega entrega)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,HoraInicio,HoraFim,Status,Observacao,PacienteId,CopeiraId,DietaId")] Entrega entrega)
         {
             if (id != entrega.Id)
             {
@@ -110,7 +110,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             {
                 try
                 {
-                    _context.Update(entrega);
+                    _context.Update(entrega.Id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -133,7 +133,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Entregas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
@@ -168,7 +168,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EntregaExists(int id)
+        private bool EntregaExists(Guid id)
         {
             return _context.Entrega.Any(e => e.Id == id);
         }

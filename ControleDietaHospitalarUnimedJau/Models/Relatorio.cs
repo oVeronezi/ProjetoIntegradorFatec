@@ -109,7 +109,7 @@ namespace SistemaGerenciamentoDietas.Services
         }
 
         // Gera relatório de histórico de um paciente
-        public RelatorioViewModel GerarRelatorioHistoricoPaciente(int idPaciente)
+        public RelatorioViewModel GerarRelatorioHistoricoPaciente(Guid idPaciente)
         {
             var paciente = _pacientes.FirstOrDefault(p => p.Id == idPaciente);
 
