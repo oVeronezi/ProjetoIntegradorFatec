@@ -24,7 +24,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Copeiras
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dietas.Find(_ => true).ToListAsync());
+            return View(await _context.Copeiras.Find(_ => true).ToListAsync());
         }
 
         // GET: Copeiras/Details/5

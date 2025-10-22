@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ControleDietaHospitalarUnimedJau.Data;
 using ControleDietaHospitalarUnimedJau.Models;
+using MongoDB.Driver;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
     public class PacientesController : Controller
     {
-        private readonly ControleDietaHospitalarUnimedJauContext _context;
+        private readonly ContextMongodb _context;
 
-        public PacientesController(ControleDietaHospitalarUnimedJauContext context)
+        public PacientesController(ContextMongodb context)
         {
             _context = context;
         }
@@ -22,7 +24,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Pacientes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Paciente.ToListAsync());
+            return View(await _context.Pacientes.Find(_ => true).ToListAsync());
         }
 
         // GET: Pacientes/Details/5
@@ -33,14 +35,14 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var paciente = await _context.Paciente
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (paciente == null)
+            var Paciente = await _context.Pacientes
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (Paciente == null)
             {
                 return NotFound();
             }
 
-            return View(paciente);
+            return View(Paciente);
         }
 
         // GET: Pacientes/Create
@@ -49,46 +51,43 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View();
         }
 
-        // POST: Pacientes/Create
+        // POST: Eventos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,NumQuarto,CodPulseira")] Paciente paciente)
+        public async Task<IActionResult> Create([Bind("Id,NomeDieta,ItensAlimentares")] Paciente Paciente)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(paciente);
-                await _context.SaveChangesAsync();
+                Paciente.Id = Guid.NewGuid();
+                await _context.Pacientes.InsertOneAsync(Paciente);
                 return RedirectToAction(nameof(Index));
             }
-            return View(paciente);
+            return View(Paciente);
         }
 
         // GET: Pacientes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var paciente = await _context.Paciente.FindAsync(id);
-            if (paciente == null)
+            var Paciente = await _context.Pacientes
+                .Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (Paciente == null)
             {
                 return NotFound();
             }
-            return View(paciente);
+            return View(Paciente);
         }
 
         // POST: Pacientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira")] Paciente paciente)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta,ItensAlimentares")] Paciente Paciente)
         {
-            if (id != paciente.Id)
+            if (id != Paciente.Id)
             {
                 return NotFound();
             }
@@ -97,12 +96,11 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             {
                 try
                 {
-                    _context.Update(paciente);
-                    await _context.SaveChangesAsync();
+                    await _context.Pacientes.ReplaceOneAsync(m => m.Id == Paciente.Id, Paciente);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PacienteExists(paciente.Id))
+                    if (!PacientesExists(Paciente.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +111,10 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(paciente);
+            return View(Paciente);
         }
 
-        // GET: Pacientes/Delete/5
+        // GET: Pacientes/Delete/
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -124,34 +122,29 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var paciente = await _context.Paciente
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (paciente == null)
+            var Paciente = await _context.Pacientes.Find(m => m.Id == id).FirstOrDefaultAsync();
+            if (Paciente == null)
             {
                 return NotFound();
             }
 
-            return View(paciente);
+            return View(Paciente);
         }
 
-        // POST: Pacientes/Delete/5
+        // POST: Dietas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var paciente = await _context.Paciente.FindAsync(id);
-            if (paciente != null)
-            {
-                _context.Paciente.Remove(paciente);
-            }
+            await _context.Pacientes.DeleteOneAsync(u => u.Id == id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PacienteExists(Guid id)
+        private bool PacientesExists(Guid id)
         {
-            return _context.Paciente.Any(e => e.Id == id);
+            return _context.Pacientes.Find(e => e.Id == id).Any();
         }
     }
 }
