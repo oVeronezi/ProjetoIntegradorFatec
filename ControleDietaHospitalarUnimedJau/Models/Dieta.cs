@@ -12,7 +12,9 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public Guid Id { get; set; }
         [Required]
         [StringLength(100)]
+        [Display(Name = "Nome da Dieta")]
         public string NomeDieta { get; set; }
+        [Display(Name = "Itens Alimentares")]
         public List<string> ItensAlimentares { get; set; }
         public Dieta()
         {
