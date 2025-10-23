@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Pacientes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Novo Cadastro</a>
 </p>
 <table class="table">
     <thead>
@@ -21,27 +21,61 @@
             <th>
                 @Html.DisplayNameFor(model => model.CodPulseira)
             </th>
+            <th>
+                Dieta Vinculada
+            </th>
+            <th>
+                Itens Alimentares
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumQuarto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CodPulseira)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumQuarto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CodPulseira)
+                </td>
+
+                <td>
+                    @if (item.DietaVinculada != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.DietaVinculada.NomeDieta)
+                    }
+                    else
+                    {
+                        <span>Não Vinculada</span>
+                    }
+                </td>
+
+                <td>
+                    @if (item.DietaVinculada?.ItensAlimentares != null)
+                    {
+                        // Faz um loop dentro da célula para exibir cada item em uma nova linha
+                        @foreach (var dietaItem in item.DietaVinculada.ItensAlimentares)
+                        {
+                            <span class="d-block small text-muted">@dietaItem</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>---</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

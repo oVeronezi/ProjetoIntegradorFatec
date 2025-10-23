@@ -21,13 +21,31 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             _context = context;
         }
 
-        // GET: Pacientes
+        // ------------------------------------------------------------------
+        // GET: Pacientes (LISTAGEM COM DIETA VINCULADA)
+        // ------------------------------------------------------------------
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pacientes.Find(_ => true).ToListAsync());
+            // O pipeline de agregação com $lookup está CORRETO e carrega a DietaVinculada.
+            var pipeline = _context.Pacientes.Aggregate()
+                .Lookup(
+                    foreignCollection: _context.Dietas,
+                    localField: p => p.IdDieta,
+                    foreignField: d => d.Id,
+                    @as: (Paciente p) => p.DietaVinculada
+                )
+                .Unwind<Paciente, Paciente>(
+                     p => p.DietaVinculada,
+                     new AggregateUnwindOptions<Paciente> { PreserveNullAndEmptyArrays = true }
+                )
+                .ToListAsync();
+
+            return View(await pipeline);
         }
 
-        // GET: Pacientes/Details/5
+        // ------------------------------------------------------------------
+        // GET: Pacientes/Details/5 (CARREGA PACIENTE + DIETA)
+        // ------------------------------------------------------------------
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -35,8 +53,22 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var Paciente = await _context.Pacientes
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
+            // Para mostrar os detalhes da dieta, o Details também precisa do lookup.
+            var pipeline = _context.Pacientes.Aggregate()
+                .Match(p => p.Id == id) // Filtra pelo ID
+                .Lookup(
+                    foreignCollection: _context.Dietas,
+                    localField: p => p.IdDieta,
+                    foreignField: d => d.Id,
+                    @as: (Paciente p) => p.DietaVinculada
+                )
+                .Unwind<Paciente, Paciente>(
+                     p => p.DietaVinculada,
+                     new AggregateUnwindOptions<Paciente> { PreserveNullAndEmptyArrays = true }
+                );
+
+            var Paciente = await pipeline.FirstOrDefaultAsync();
+
             if (Paciente == null)
             {
                 return NotFound();
@@ -45,17 +77,28 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // GET: Pacientes/Create
-        public IActionResult Create()
+        // ------------------------------------------------------------------
+        // GET: Pacientes/Create (PREPARA FORMULÁRIO)
+        // ------------------------------------------------------------------
+        public async Task<IActionResult> Create()
         {
+            // Adiciona a lista de Dietas para o dropdown na View
+            ViewBag.IdDieta = new SelectList(
+                await _context.Dietas.Find(_ => true).ToListAsync(),
+                "Id", // Valor que será armazenado (o Guid da Dieta)
+                "NomeDieta" // Texto que será exibido no dropdown
+            );
             return View();
         }
 
-        // POST: Eventos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // ------------------------------------------------------------------
+        // POST: Pacientes/Create
+        // ------------------------------------------------------------------
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,NomeDieta,ItensAlimentares")] Paciente Paciente)
+        [ValidateAntiForgeryToken] // Boa prática de segurança
+        // ATENÇÃO: O Bind deve listar TODAS as propriedades do Paciente
+        // e incluir o IdDieta
+        public async Task<IActionResult> Create([Bind("Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
             if (ModelState.IsValid)
             {
@@ -63,10 +106,20 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 await _context.Pacientes.InsertOneAsync(Paciente);
                 return RedirectToAction(nameof(Index));
             }
+
+            // Recarrega o dropdown em caso de erro de validação
+            ViewBag.IdDieta = new SelectList(
+                await _context.Dietas.Find(_ => true).ToListAsync(),
+                "Id",
+                "NomeDieta",
+                Paciente.IdDieta // Seleciona o ID que o usuário tentou enviar
+            );
             return View(Paciente);
         }
 
-        // GET: Pacientes/Edit/5
+        // ------------------------------------------------------------------
+        // GET: Pacientes/Edit/5 (CARREGA FORMULÁRIO E DIETAS)
+        // ------------------------------------------------------------------
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -74,18 +127,34 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var Paciente = await _context.Pacientes
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
+            // Busca o paciente apenas para edição
+            var Paciente = await _context.Pacientes.Find(m => m.Id == id).FirstOrDefaultAsync();
+
             if (Paciente == null)
             {
                 return NotFound();
             }
+
+            // Carrega a lista de Dietas para o dropdown
+            // O último parâmetro (Paciente.IdDieta) seleciona a dieta atual do paciente.
+            ViewBag.IdDieta = new SelectList(
+                await _context.Dietas.Find(_ => true).ToListAsync(),
+                "Id",
+                "NomeDieta",
+                Paciente.IdDieta
+            );
+
             return View(Paciente);
         }
 
+        // ------------------------------------------------------------------
         // POST: Pacientes/Edit/5
+        // ------------------------------------------------------------------
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta,ItensAlimentares")] Paciente Paciente)
+        [ValidateAntiForgeryToken] // Boa prática de segurança
+        // ATENÇÃO: O Bind deve listar TODAS as propriedades do Paciente
+        // e o IdDieta. O 'Id' já está no método.
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
             if (id != Paciente.Id)
             {
@@ -94,27 +163,32 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                // Usamos o ReplaceOneAsync para atualizar todo o documento
+                var result = await _context.Pacientes.ReplaceOneAsync(m => m.Id == Paciente.Id, Paciente);
+
+                // O ReplaceOneAsync não lança exceção de concorrência como o EF Core,
+                // então verificamos se o documento realmente existia.
+                if (result.MatchedCount == 0)
                 {
-                    await _context.Pacientes.ReplaceOneAsync(m => m.Id == Paciente.Id, Paciente);
+                    return NotFound(); // Documento não encontrado para substituição
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PacientesExists(Paciente.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            // Recarrega o dropdown em caso de erro de validação
+            ViewBag.IdDieta = new SelectList(
+                await _context.Dietas.Find(_ => true).ToListAsync(),
+                "Id",
+                "NomeDieta",
+                Paciente.IdDieta
+            );
             return View(Paciente);
         }
 
-        // GET: Pacientes/Delete/
+        // ------------------------------------------------------------------
+        // GET: Pacientes/Delete/5
+        // ------------------------------------------------------------------
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -122,7 +196,22 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            var Paciente = await _context.Pacientes.Find(m => m.Id == id).FirstOrDefaultAsync();
+            // O Delete e o Details precisam do lookup para exibir os dados corretamente.
+            var pipeline = _context.Pacientes.Aggregate()
+                .Match(p => p.Id == id)
+                .Lookup(
+                    foreignCollection: _context.Dietas,
+                    localField: p => p.IdDieta,
+                    foreignField: d => d.Id,
+                    @as: (Paciente p) => p.DietaVinculada
+                )
+                .Unwind<Paciente, Paciente>(
+                     p => p.DietaVinculada,
+                     new AggregateUnwindOptions<Paciente> { PreserveNullAndEmptyArrays = true }
+                );
+
+            var Paciente = await pipeline.FirstOrDefaultAsync();
+
             if (Paciente == null)
             {
                 return NotFound();
@@ -131,7 +220,9 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // POST: Dietas/Delete/5
+        // ------------------------------------------------------------------
+        // POST: Pacientes/Delete/5
+        // ------------------------------------------------------------------
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
