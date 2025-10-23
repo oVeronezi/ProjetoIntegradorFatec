@@ -15,9 +15,11 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [StringLength(255)]
         public string Nome { get; set; }
         [Required(ErrorMessage = "O número do quarto é obrigatório")]
+        [Display(Name = "Número do Quarto")]
         public int NumQuarto { get; set; }
         [Required(ErrorMessage = "O código da pulseira é obrigatório")]
         [StringLength(50)]
+        [Display(Name = "Código da Pulseira")]
         public string CodPulseira { get; set; } // alterar aqui caso o código seja apenas de números
         //public int? DietaId { get; set; }
 
