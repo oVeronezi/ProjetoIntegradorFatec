@@ -179,7 +179,9 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // POST: Dietas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")] // Certifique-se de que tem esta Role configurada
+        //[Authorize(Roles = "Administrador")] 
+        // enquanto não tiver login, isso não funciona, já que não tem como autorizar o ADM a deletar
+        // quando add um login, descomentar essa linha
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             await _context.Dietas.DeleteOneAsync(u => u.Id == id);
