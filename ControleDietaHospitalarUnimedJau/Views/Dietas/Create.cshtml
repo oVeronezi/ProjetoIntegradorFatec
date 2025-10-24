@@ -19,7 +19,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="ItensAlimentares" class="control-label"></label>
-                <input asp-for="ItensAlimentares" class="form-control" />
+
+                <textarea name="itensString" class="form-control" rows="5"></textarea>
+
                 <span asp-validation-for="ItensAlimentares" class="text-danger"></span>
             </div>
             <div class="form-group">

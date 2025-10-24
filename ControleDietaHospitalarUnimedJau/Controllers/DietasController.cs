@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; // Este using parece não ser necessário para MongoDB
 using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
+
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
     public class DietasController : Controller
@@ -53,11 +54,30 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // POST: Eventos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,NomeDieta,ItensAlimentares")] Dieta dieta)
+        // --- ALTERAÇÃO 1 (CREATE) ---
+        // Removido "ItensAlimentares" do [Bind]
+        // Adicionado "string itensString" como parâmetro
+        public async Task<IActionResult> Create([Bind("Id,NomeDieta")] Dieta dieta, string itensString)
         {
+            // --- ALTERAÇÃO 2 (CREATE) ---
+            // Adicionámos a lógica para converter a string em lista
+            if (!string.IsNullOrEmpty(itensString))
+            {
+                dieta.ItensAlimentares = itensString.Split('\n')
+                                                  .Select(s => s.Trim())
+                                                  .Where(s => !string.IsNullOrEmpty(s))
+                                                  .ToList();
+            }
+            else
+            {
+                dieta.ItensAlimentares = new List<string>();
+            }
+
+            // --- ALTERAÇÃO 3 (CREATE) ---
+            // Removemos a validação do campo antigo
+            ModelState.Remove("ItensAlimentares");
+
             if (ModelState.IsValid)
             {
                 dieta.Id = Guid.NewGuid();
@@ -86,20 +106,44 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
         // POST: Dietas/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta,ItensAlimentares")] Dieta dieta)
+        // --- ALTERAÇÃO 1 (EDIT) ---
+        // Removido "ItensAlimentares" do [Bind]
+        // Adicionado "string itensString" como parâmetro
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta")] Dieta dieta, string itensString)
         {
             if (id != dieta.Id)
             {
                 return NotFound();
             }
 
+            // --- ALTERAÇÃO 2 (EDIT) ---
+            // Adicionámos a lógica para converter a string em lista
+            if (!string.IsNullOrEmpty(itensString))
+            {
+                dieta.ItensAlimentares = itensString.Split('\n') // Divide por quebra de linha
+                                                  .Select(s => s.Trim()) // Remove espaços em branco
+                                                  .Where(s => !string.IsNullOrEmpty(s)) // Remove linhas vazias
+                                                  .ToList(); // Converte para Lista
+            }
+            else
+            {
+                // Se a caixa de texto estava vazia, define a lista como vazia
+                dieta.ItensAlimentares = new List<string>();
+            }
+
+            // --- ALTERAÇÃO 3 (EDIT) ---
+            // Removemos a validação do campo antigo, pois tratámos dele manualmente
+            ModelState.Remove("ItensAlimentares");
+
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Agora o objeto "dieta" está completo e será salvo corretamente
                     await _context.Dietas.ReplaceOneAsync(m => m.Id == dieta.Id, dieta);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException) // Nota: DbUpdateConcurrencyException é do EntityFramework, não do Mongo.
                 {
                     if (!DietaExists(dieta.Id))
                     {
@@ -131,10 +175,11 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
             return View(dieta);
         }
+
         // POST: Dietas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")] // Certifique-se de que tem esta Role configurada
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             await _context.Dietas.DeleteOneAsync(u => u.Id == id);
