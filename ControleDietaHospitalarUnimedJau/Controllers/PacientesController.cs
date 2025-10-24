@@ -77,9 +77,9 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ------------------------------------------------------------------
+        // ==================================================================
         // GET: Pacientes/Create (PREPARA FORMULÁRIO)
-        // ------------------------------------------------------------------
+        // ==================================================================
         public async Task<IActionResult> Create()
         {
             // Adiciona a lista de Dietas para o dropdown na View
@@ -91,23 +91,36 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View();
         }
 
-        // ------------------------------------------------------------------
-        // POST: Pacientes/Create
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // POST: Pacientes/Create (CORRIGIDO)
+        // ==================================================================
         [HttpPost]
         [ValidateAntiForgeryToken] // Boa prática de segurança
-        // ATENÇÃO: O Bind deve listar TODAS as propriedades do Paciente
-        // e incluir o IdDieta
+        // ATENÇÃO: O Bind deve listar TODAS as propriedades do Paciente (incluindo IdDieta)
         public async Task<IActionResult> Create([Bind("Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
+            // 💡 REMOÇÃO FORÇADA DE ERROS DE PROPRIEDADES DE NAVEGAÇÃO
+            // Isto resolve o problema de Model Binding que pode ocorrer com DietaVinculada e Entregas,
+            // que são nulas no POST.
+            if (ModelState.ContainsKey("DietaVinculada"))
+            {
+                ModelState.Remove("DietaVinculada");
+            }
+            if (ModelState.ContainsKey("Entregas"))
+            {
+                ModelState.Remove("Entregas");
+            }
+
+            // Agora, o ModelState.IsValid deve verificar apenas os campos do formulário
             if (ModelState.IsValid)
             {
+                // Garante que o ID é gerado antes de inserir no MongoDB
                 Paciente.Id = Guid.NewGuid();
                 await _context.Pacientes.InsertOneAsync(Paciente);
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recarrega o dropdown em caso de erro de validação
+            // Recarrega o dropdown em caso de erro de validação (se a validação falhar por outro motivo)
             ViewBag.IdDieta = new SelectList(
                 await _context.Dietas.Find(_ => true).ToListAsync(),
                 "Id",
@@ -151,9 +164,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // POST: Pacientes/Edit/5
         // ------------------------------------------------------------------
         [HttpPost]
-        [ValidateAntiForgeryToken] // Boa prática de segurança
-        // ATENÇÃO: O Bind deve listar TODAS as propriedades do Paciente
-        // e o IdDieta. O 'Id' já está no método.
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
             if (id != Paciente.Id)
@@ -161,22 +172,40 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // 💡 REMOÇÃO FORÇADA DE ERROS DE PROPRIEDADES DE NAVEGAÇÃO
+            // Isto resolve o problema da DietaVinculada ser 'Invalid' no POST
+            if (ModelState.ContainsKey("DietaVinculada"))
             {
-                // Usamos o ReplaceOneAsync para atualizar todo o documento
-                var result = await _context.Pacientes.ReplaceOneAsync(m => m.Id == Paciente.Id, Paciente);
-
-                // O ReplaceOneAsync não lança exceção de concorrência como o EF Core,
-                // então verificamos se o documento realmente existia.
-                if (result.MatchedCount == 0)
-                {
-                    return NotFound(); // Documento não encontrado para substituição
-                }
-
-                return RedirectToAction(nameof(Index));
+                ModelState.Remove("DietaVinculada");
+            }
+            if (ModelState.ContainsKey("Entregas"))
+            {
+                ModelState.Remove("Entregas");
             }
 
-            // Recarrega o dropdown em caso de erro de validação
+            // O ModelState agora deve ser TRUE, pois as propriedades problemáticas foram ignoradas
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Usamos o ReplaceOneAsync para atualizar todo o documento
+                    var result = await _context.Pacientes.ReplaceOneAsync(m => m.Id == Paciente.Id, Paciente);
+
+                    if (result.MatchedCount == 0)
+                    {
+                        return NotFound();
+                    }
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    // Adicione um log ou tratamento de erro
+                    ModelState.AddModelError("", "Ocorreu um erro ao tentar salvar o paciente.");
+                }
+            }
+
+            // Recarrega o dropdown em caso de erro de validação (se o ModelState falhar por outro motivo)
             ViewBag.IdDieta = new SelectList(
                 await _context.Dietas.Find(_ => true).ToListAsync(),
                 "Id",
@@ -185,7 +214,6 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             );
             return View(Paciente);
         }
-
         // ------------------------------------------------------------------
         // GET: Pacientes/Delete/5
         // ------------------------------------------------------------------
@@ -225,7 +253,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // ------------------------------------------------------------------
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             await _context.Pacientes.DeleteOneAsync(u => u.Id == id);

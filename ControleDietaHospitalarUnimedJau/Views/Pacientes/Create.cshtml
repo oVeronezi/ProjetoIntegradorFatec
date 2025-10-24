@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Criar Novo Paciente</h1>
 
 <h4>Paciente</h4>
 <hr />
@@ -12,35 +12,44 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="NumQuarto" class="control-label"></label>
                 <input asp-for="NumQuarto" class="form-control" />
                 <span asp-validation-for="NumQuarto" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CodPulseira" class="control-label"></label>
                 <input asp-for="CodPulseira" class="form-control" />
                 <span asp-validation-for="CodPulseira" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IdDieta" class="control-label">Dieta</label>
+                <select asp-for="IdDieta" class="form-control" asp-items="ViewBag.IdDieta">
+                    <option value="">-- Selecione a Dieta --</option>
+                </select>
+                <span asp-validation-for="IdDieta" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <br />
                 <input type="submit" value="Criar" class="btn btn-success" />
                 <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
             </div>
-        <div>
-            
-            </div>
         </form>
     </div>
 </div>
 
 
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

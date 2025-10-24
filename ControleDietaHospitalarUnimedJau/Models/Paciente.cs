@@ -1,8 +1,10 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace ControleDietaHospitalarUnimedJau.Models
 {
@@ -28,11 +30,12 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public Guid IdDieta { get; set; }
 
 
-        // 2. O CAMPO PARA RECEBER O OBJETO DIETA (após o lookup)
-        // O BsonIgnoreIfNull evita que o driver procure este campo no documento salvo.
+        // 🚨 CORREÇÃO CRÍTICA AQUI 🚨
         [BsonIgnoreIfNull]
-        public Dieta DietaVinculada { get; set; } // Nome sugestivo
+        [BindNever] // 👈 Adicionado para ignorar esta propriedade no POST do formulário
+        public Dieta DietaVinculada { get; set; }
 
+        [BindNever] // Adicionado para ignorar esta coleção no POST do formulário
         public ICollection<Entrega> Entregas { get; set; }
         public Paciente()
         {
