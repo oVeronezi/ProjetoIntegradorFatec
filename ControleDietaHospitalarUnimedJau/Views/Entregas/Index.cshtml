@@ -19,17 +19,16 @@
                 @Html.DisplayNameFor(model => model.HoraFim)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model.StatusValidacao)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Observacao)
             </th>
-
             <th>
-                Paciente
+                @Html.DisplayNameFor(model => model.IdPaciente)
             </th>
             <th>
-                Copeira
+                @Html.DisplayNameFor(model => model.IdCopeira)
             </th>
             <th>
                 Dieta
@@ -51,45 +50,56 @@
                     @Html.DisplayFor(modelItem => item.HoraFim)
                 </td>
                 <td>
-                    <strong>@Html.DisplayFor(modelItem => item.Status)</strong>
+                    <strong>@Html.DisplayFor(modelItem => item.StatusValidacao)</strong>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Observacao)
                 </td>
 
                 <td>
-                    @if (item.Paciente != null)
+                    @if (item.DetalhesPaciente != null)
                     {
-                        @Html.DisplayFor(modelItem => item.Paciente.Nome)
+                        @Html.DisplayFor(modelItem => item.DetalhesPaciente.Nome)
                     }
                     else
                     {
                         <span class="text-danger">Não Encontrado</span>
                     }
                 </td>
+
                 <td>
-                    @if (item.Copeira != null)
+                    @if (item.DetalhesCopeira != null)
                     {
-                        @Html.DisplayFor(modelItem => item.Copeira.Nome)
+                        @Html.DisplayFor(modelItem => item.DetalhesCopeira.Nome)
                     }
                     else
                     {
                         <span class="text-danger">Não Encontrado</span>
                     }
                 </td>
+
                 <td>
-                    @if (item.Dieta != null)
+                    @if (item.DetalhesDieta != null)
                     {
-                        @Html.DisplayFor(modelItem => item.Dieta.NomeDieta)
+                        @Html.DisplayFor(modelItem => item.DetalhesDieta.NomeDieta)
                     }
                     else
                     {
                         <span class="text-danger">Não Encontrado</span>
                     }
                 </td>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdBandeja)
+                    @if (item.DetalhesBandeja != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.DetalhesBandeja.CodBandeja)
+                    }
+                    else
+                    {
+                        <span class="text-danger">Inválida</span>
+                    }
                 </td>
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |

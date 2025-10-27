@@ -3,7 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SistemaGerenciamentoDietas.Services
+// ----- CORREÇÃO DE NAMESPACE -----
+// Alterado de "SistemaGerenciamentoDietas.Services" para
+// corresponder à estrutura do teu projeto.
+namespace ControleDietaHospitalarUnimedJau.Models
 {
     // Classe Relatorio - Serviço para geração de relatórios
     public class Relatorio
@@ -27,7 +30,8 @@ namespace SistemaGerenciamentoDietas.Services
             var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 
             var entregasCopeira = _entregas
-                .Where(e => e.IdCopeira == idCopeira && e.Status == "Concluída")
+                // ----- CORREÇÃO DE "STATUS" -----
+                .Where(e => e.IdCopeira == idCopeira && e.StatusValidacao == "Concluída")
                 .ToList();
 
             var viewModel = new RelatorioViewModel
@@ -35,30 +39,35 @@ namespace SistemaGerenciamentoDietas.Services
                 TipoRelatorio = $"Tempo Médio de Entrega - Copeira: {copeira?.Nome ?? "Desconhecida"}",
                 Entregas = entregasCopeira,
                 DataInicio = entregasCopeira.Any() ? entregasCopeira.Min(e => e.HoraInicio) : DateTime.Now,
-                DataFim = entregasCopeira.Any() && entregasCopeira.Any(e => e.HoraFim.HasValue)
-                    ? entregasCopeira.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
+                // ----- CORREÇÃO DE "DATETIME" (HasValue/Value) -----
+                DataFim = entregasCopeira.Any() && entregasCopeira.Any(e => e.HoraFim > DateTime.MinValue)
+                    ? entregasCopeira.Where(e => e.HoraFim > DateTime.MinValue).Max(e => e.HoraFim)
                     : DateTime.Now
             };
 
             if (entregasCopeira.Any())
             {
-                var entregasComTempo = entregasCopeira.Where(e => e.HoraFim.HasValue).ToList();
+                // ----- CORREÇÃO DE "DATETIME" (HasValue) -----
+                var entregasComTempo = entregasCopeira.Where(e => e.HoraFim > DateTime.MinValue).ToList();
 
                 if (entregasComTempo.Any())
                 {
                     var tempoMedioGeral = entregasComTempo
-                        .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
+                        // ----- CORREÇÃO DE "DATETIME" (Value) -----
+                        .Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes);
 
                     viewModel.TemposMedios.Add("Tempo Médio Geral", tempoMedioGeral);
 
                     // Tempo médio por tipo de dieta
                     var porDieta = entregasComTempo
-                        .Where(e => e.Dieta != null)
-                        .GroupBy(e => e.Dieta.NomeDieta)
+                        // ----- CORREÇÃO DE "DIETA" -----
+                        .Where(e => e.DetalhesDieta != null)
+                        .GroupBy(e => e.DetalhesDieta.NomeDieta)
                         .Select(g => new
                         {
                             Dieta = g.Key,
-                            TempoMedio = g.Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes)
+                            // ----- CORREÇÃO DE "DATETIME" (Value) -----
+                            TempoMedio = g.Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes)
                         });
 
                     foreach (var item in porDieta)
@@ -75,7 +84,8 @@ namespace SistemaGerenciamentoDietas.Services
         public RelatorioViewModel GerarRelatorioErrosValidacao()
         {
             var entregasComErro = _entregas
-                .Where(e => e.Status == "Erro" ||
+                // ----- CORREÇÃO DE "STATUS" -----
+                .Where(e => e.StatusValidacao == "Erro" ||
                            (e.Observacao != null && e.Observacao.ToLower().Contains("erro")))
                 .OrderByDescending(e => e.HoraInicio)
                 .ToList();
@@ -132,8 +142,9 @@ namespace SistemaGerenciamentoDietas.Services
                 TipoRelatorio = $"Histórico do Paciente - {paciente.Nome} (Quarto {paciente.NumQuarto})",
                 Entregas = entregasPaciente,
                 DataInicio = entregasPaciente.Any() ? entregasPaciente.Min(e => e.HoraInicio) : DateTime.Now,
-                DataFim = entregasPaciente.Any() && entregasPaciente.Any(e => e.HoraFim.HasValue)
-                    ? entregasPaciente.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
+                // ----- CORREÇÃO DE "DATETIME" (HasValue/Value) -----
+                DataFim = entregasPaciente.Any() && entregasPaciente.Any(e => e.HoraFim > DateTime.MinValue)
+                    ? entregasPaciente.Where(e => e.HoraFim > DateTime.MinValue).Max(e => e.HoraFim)
                     : DateTime.Now
             };
 
@@ -141,8 +152,9 @@ namespace SistemaGerenciamentoDietas.Services
             if (entregasPaciente.Any())
             {
                 var totalEntregas = entregasPaciente.Count;
-                var entregasConcluidas = entregasPaciente.Count(e => e.Status == "Concluída");
-                var entregasComErro = entregasPaciente.Count(e => e.Status == "Erro");
+                // ----- CORREÇÃO DE "STATUS" -----
+                var entregasConcluidas = entregasPaciente.Count(e => e.StatusValidacao == "Concluída");
+                var entregasComErro = entregasPaciente.Count(e => e.StatusValidacao == "Erro");
 
                 viewModel.TemposMedios.Add("Total de Entregas", totalEntregas);
                 viewModel.TemposMedios.Add("Entregas Concluídas", entregasConcluidas);
@@ -150,13 +162,15 @@ namespace SistemaGerenciamentoDietas.Services
                 viewModel.TotalErros = entregasComErro;
 
                 var entregasComTempo = entregasPaciente
-                    .Where(e => e.HoraFim.HasValue && e.Status == "Concluída")
+                    // ----- CORREÇÃO DE "DATETIME" (HasValue) e "STATUS" -----
+                    .Where(e => e.HoraFim > DateTime.MinValue && e.StatusValidacao == "Concluída")
                     .ToList();
 
                 if (entregasComTempo.Any())
                 {
                     var tempoMedio = entregasComTempo
-                        .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
+                        // ----- CORREÇÃO DE "DATETIME" (Value) -----
+                        .Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes);
 
                     viewModel.TemposMedios.Add("Tempo Médio de Entrega (min)", tempoMedio);
                 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Server.Kestrel.Core.Features;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MongoDB.Driver;
+// Adicionei esta referência ao Models, caso esteja em falta
+using ControleDietaHospitalarUnimedJau.Models;
 
 namespace ControleDietaHospitalarUnimedJau.Models
 {
@@ -39,13 +41,13 @@ namespace ControleDietaHospitalarUnimedJau.Models
             }
 
         }
-        public IMongoCollection<Dieta> Dietas 
-        { 
+        public IMongoCollection<Dieta> Dietas
+        {
             get
             {
                 return _database.GetCollection<Dieta>("Dietas");
             }
-            
+
         }
         public IMongoCollection<Entrega> Entregas
         {
@@ -61,6 +63,14 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 return _database.GetCollection<Paciente>("Pacientes");
             }
         }
-        
+
+        public IMongoCollection<Bandeja> Bandejas
+        {
+            get
+            {
+                return _database.GetCollection<Bandeja>("Bandejas");
+            }
+        }
+
     }//fim da classe
 }

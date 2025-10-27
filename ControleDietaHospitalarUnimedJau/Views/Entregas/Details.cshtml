@@ -10,53 +10,71 @@
     <h4>Entrega</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.HoraInicio)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.HoraInicio)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.HoraFim)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.HoraFim)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StatusValidacao)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StatusValidacao)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Observacao)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Observacao)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdPaciente)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdPaciente)
+        <dd class="col-sm-10">
+            @if (Model.DetalhesPaciente != null)
+            {
+                @Html.DisplayFor(model => model.DetalhesPaciente.Nome)
+            }
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdCopeira)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCopeira)
+        <dd class="col-sm-10">
+            @if (Model.DetalhesCopeira != null)
+            {
+                @Html.DisplayFor(model => model.DetalhesCopeira.Nome)
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdDieta)
+
+        <dt class="col-sm-2">
+            Dieta
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdDieta)
+        <dd class="col-sm-10">
+            @if (Model.DetalhesDieta != null)
+            {
+                @Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)
+            }
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdBandeja)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdBandeja)
+        <dd class="col-sm-10">
+            @if (Model.DetalhesBandeja != null)
+            {
+                @Html.DisplayFor(model => model.DetalhesBandeja.CodBandeja)
+            }
         </dd>
     </dl>
 </div>

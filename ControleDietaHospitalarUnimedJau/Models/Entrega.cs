@@ -1,39 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
 
 namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class Entrega
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
+        [Required]
         public Guid Id { get; set; }
-        [Display(Name = "Hora de Início")]
+
+        [BsonElement("IdPaciente")]
+        [BsonRepresentation(BsonType.String)]
+        [Required]
+        [Display(Name = "Paciente")]
+        public Guid IdPaciente { get; set; }
+
+        [BsonElement("IdCopeira")]
+        [BsonRepresentation(BsonType.String)]
+        [Required]
+        [Display(Name = "Copeira")]
+        public Guid IdCopeira { get; set; }
+
+        [BsonElement("HoraInicio")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        [Display(Name = "Início da Entrega")]
         public DateTime HoraInicio { get; set; }
 
-        [Display(Name = "Hora Final")]
-        public DateTime? HoraFim { get; set; }  
-        public string Status { get; set; }
+        [BsonElement("HoraFim")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        [Display(Name = "Fim da Entrega")]
+        public DateTime HoraFim { get; set; }
 
-        [Display(Name = "Observação")]
+        [BsonElement("IdBandeja")]
+        [BsonRepresentation(BsonType.String)]
+        [Display(Name = "Bandeja")]
+        public Guid IdBandeja { get; set; }
+
+        [BsonElement("StatusValidacao")]
+        [Display(Name = "Status")]
+        public string StatusValidacao { get; set; }
+
+        [BsonElement("Observacao")]
         public string Observacao { get; set; }
-        public Guid IdPaciente { get; set; }
-        public Paciente Paciente { get; set; }
-        public Guid IdCopeira { get; set; }
-        public Copeira Copeira { get; set; }
-        public Guid? IdDieta { get; set; }
-        public Dieta Dieta { get; set; }
 
-        public Guid? IdBandeja { get; set; }
 
-        public string? StatusValidacao { get; set; }
+        // --- PROPRIEDADES DE NAVEGAÇÃO (CORRIGIDAS) ---
 
-        public TimeSpan? CalcularTempoEntrega() 
-        {
-            if (HoraFim.HasValue && HoraFim.Value > HoraInicio)
-            {
-                return HoraFim.Value - HoraInicio;
-            }
-            return null;
-        }
+        public Paciente DetalhesPaciente { get; set; }
+
+        public Copeira DetalhesCopeira { get; set; }
+
+        public Bandeja DetalhesBandeja { get; set; }
+
+        public Dieta DetalhesDieta { get; set; }
     }
 }
