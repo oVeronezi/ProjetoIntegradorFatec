@@ -27,7 +27,7 @@ namespace SistemaGerenciamentoDietas.Services
             var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 
             var entregasCopeira = _entregas
-                .Where(e => e.CopeiraId == idCopeira && e.Status == "Concluída")
+                .Where(e => e.IdCopeira == idCopeira && e.Status == "Concluída")
                 .ToList();
 
             var viewModel = new RelatorioViewModel
@@ -93,7 +93,7 @@ namespace SistemaGerenciamentoDietas.Services
             if (entregasComErro.Any())
             {
                 var errosPorCopeira = entregasComErro
-                    .GroupBy(e => e.CopeiraId)
+                    .GroupBy(e => e.IdCopeira)
                     .ToDictionary(
                         g => $"Copeira ID {g.Key}",
                         g => (double)g.Count()
@@ -123,7 +123,7 @@ namespace SistemaGerenciamentoDietas.Services
             }
 
             var entregasPaciente = _entregas
-                .Where(e => e.PacienteId == idPaciente)
+                .Where(e => e.IdPaciente == idPaciente)
                 .OrderByDescending(e => e.HoraInicio)
                 .ToList();
 

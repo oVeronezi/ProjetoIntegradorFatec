@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ControleDietaHospitalarUnimedJau.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ControleDietaHospitalarUnimedJau.Data;
-using ControleDietaHospitalarUnimedJau.Models;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ControleDietaHospitalarUnimedJau.Controllers
+namespace ControleDietaHospitalarUnimedJau.Models
 {
     public class EntregasController : Controller
     {
@@ -21,10 +20,53 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             _context = context;
         }
 
-        // GET: Entregas
+        // ==================================================================
+        // GET: Entregas (LISTAGEM COM LOOKUPS MÚLTIPLOS)
+        // ==================================================================
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Entregas.Find(_ => true).ToListAsync());
+            // O pipeline de agregação deve realizar 3 lookups: Paciente, Copeira e Dieta.
+            var pipeline = _context.Entregas.Aggregate()
+
+                // 1. LOOKUP Paciente
+                .Lookup(
+                    foreignCollection: _context.Pacientes,
+                    localField: e => e.IdPaciente,
+                    foreignField: p => p.Id,
+                    @as: (Entrega e) => e.Paciente
+                )
+                .Unwind<Entrega, Entrega>(
+                    e => e.Paciente,
+                    new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true }
+                )
+
+                // 2. LOOKUP Copeira
+                .Lookup(
+                    foreignCollection: _context.Copeiras,
+                    localField: e => e.IdCopeira,
+                    foreignField: c => c.Id,
+                    @as: (Entrega e) => e.Copeira
+                )
+                .Unwind<Entrega, Entrega>(
+                    e => e.Copeira,
+                    new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true }
+                )
+
+                // 3. LOOKUP Dieta (É Guid? e Dieta)
+                .Lookup(
+                    foreignCollection: _context.Dietas,
+                    localField: e => e.IdDieta,
+                    foreignField: d => d.Id,
+                    @as: (Entrega e) => e.Dieta
+                )
+                .Unwind<Entrega, Entrega>(
+                    e => e.Dieta,
+                    new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true }
+                )
+
+                .ToListAsync();
+
+            return View(await pipeline);
         }
 
         // GET: Entregas/Details/5

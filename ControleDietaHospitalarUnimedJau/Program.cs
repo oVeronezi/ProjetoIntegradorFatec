@@ -13,8 +13,8 @@ namespace ControleDietaHospitalarUnimedJau
             var builder = WebApplication.CreateBuilder(args);
             // Add Services no container
             builder.Services.AddControllersWithViews();
-            //builder.Services.AddDbContext<ControleDietaHospitalarUnimedJauContext>(options =>
-            //options.UseSqlServer(builder.Configuration.GetConnectionString("ControleDietaHospitalarUnimedJauContext") ?? throw new InvalidOperationException("Connection string 'ControleDietaHospitalarUnimedJauContext' not found.")));
+            builder.Services.AddDbContext<ControleDietaHospitalarUnimedJauContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("ControleDietaHospitalarUnimedJauContext") ?? throw new InvalidOperationException("Connection string 'ControleDietaHospitalarUnimedJauContext' not found.")));
 
             builder.Services.AddControllersWithViews();
 
