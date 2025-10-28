@@ -1,0 +1,62 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel // O modelo pode ser genérico ou null
+
+@{
+    ViewData["Title"] = "index";
+}
+
+<h1>📊 Relatórios Gerenciais</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Tempo Médio por Copeira</h5>
+            </div>
+            <div class="card-body">
+                <p>Calcula o tempo médio de entrega das dietas por copeira e por tipo de dieta.</p>
+                <form asp-controller="Relatorios" asp-action="GerarTempoMedio" method="get">
+                    <div class="form-group mb-3">
+                        <label for="idCopeira">Selecione a Copeira:</label>
+                        <select name="idCopeira" id="idCopeira" class="form-control" asp-items="ViewBag.Copeiras" required>
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Gerar Relatório</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Erros de Validação</h5>
+            </div>
+            <div class="card-body">
+                <p>Lista todas as entregas que foram marcadas como "Erro" ou possuem observações críticas.</p>
+                <a asp-controller="Relatorios" asp-action="GerarErrosValidacao" class="btn btn-danger w-100 mt-4">Gerar Relatório</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Histórico de um Paciente</h5>
+            </div>
+            <div class="card-body">
+                <p>Exibe todas as entregas feitas para um paciente específico e suas estatísticas.</p>
+                <form asp-controller="Relatorios" asp-action="GerarHistoricoPaciente" method="get">
+                    <div class="form-group mb-3">
+                        <label for="idPaciente">Selecione o Paciente:</label>
+                        <select name="idPaciente" id="idPaciente" class="form-control" asp-items="ViewBag.Pacientes" required>
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Gerar Relatório</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

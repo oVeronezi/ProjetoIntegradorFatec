@@ -19,6 +19,12 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [Display(Name = "Paciente")]
         public Guid IdPaciente { get; set; }
 
+        [BsonElement("IdDieta")]
+        [BsonRepresentation(BsonType.String)]
+        [Required]
+        [Display(Name = "Dieta")]
+        public Guid? IdDieta { get; set; } // Pode ser nulo
+
         [BsonElement("IdCopeira")]
         [BsonRepresentation(BsonType.String)]
         [Required]
