@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// ----- CORREÇÃO DE NAMESPACE -----
-// Alterado de "SistemaGerenciamentoDietas.Services" para
-// corresponder à estrutura do teu projeto.
 namespace ControleDietaHospitalarUnimedJau.Models
 {
     // Classe Relatorio - Serviço para geração de relatórios
@@ -30,7 +27,6 @@ namespace ControleDietaHospitalarUnimedJau.Models
             var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 
             var entregasCopeira = _entregas
-                // ----- CORREÇÃO DE "STATUS" -----
                 .Where(e => e.IdCopeira == idCopeira && e.StatusValidacao == "Concluída")
                 .ToList();
 
@@ -39,35 +35,39 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 TipoRelatorio = $"Tempo Médio de Entrega - Copeira: {copeira?.Nome ?? "Desconhecida"}",
                 Entregas = entregasCopeira,
                 DataInicio = entregasCopeira.Any() ? entregasCopeira.Min(e => e.HoraInicio) : DateTime.Now,
-                // ----- CORREÇÃO DE "DATETIME" (HasValue/Value) -----
-                DataFim = entregasCopeira.Any() && entregasCopeira.Any(e => e.HoraFim > DateTime.MinValue)
-                    ? entregasCopeira.Where(e => e.HoraFim > DateTime.MinValue).Max(e => e.HoraFim)
+
+                // ----- CORREÇÃO DE "DATETIME?" (Linha 48) -----
+                // Trocado de "e.HoraFim > DateTime.MinValue" para "e.HoraFim.HasValue"
+                // Trocado de "e.HoraFim" para "e.HoraFim.Value"
+                DataFim = entregasCopeira.Any() && entregasCopeira.Any(e => e.HoraFim.HasValue)
+                    ? entregasCopeira.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
                     : DateTime.Now
             };
 
             if (entregasCopeira.Any())
             {
-                // ----- CORREÇÃO DE "DATETIME" (HasValue) -----
-                var entregasComTempo = entregasCopeira.Where(e => e.HoraFim > DateTime.MinValue).ToList();
+                // ----- CORREÇÃO DE "DATETIME?" (Linha 54) -----
+                // Trocado para .HasValue
+                var entregasComTempo = entregasCopeira.Where(e => e.HoraFim.HasValue).ToList();
 
                 if (entregasComTempo.Any())
                 {
                     var tempoMedioGeral = entregasComTempo
-                        // ----- CORREÇÃO DE "DATETIME" (Value) -----
-                        .Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes);
+                        // ----- CORREÇÃO DE "TIMESPAN?" (Linha 60) -----
+                        // Trocado para .HoraFim.Value (corrige o CS1061)
+                        .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
 
                     viewModel.TemposMedios.Add("Tempo Médio Geral", tempoMedioGeral);
 
-                    // Tempo médio por tipo de dieta
                     var porDieta = entregasComTempo
-                        // ----- CORREÇÃO DE "DIETA" -----
                         .Where(e => e.DetalhesDieta != null)
                         .GroupBy(e => e.DetalhesDieta.NomeDieta)
                         .Select(g => new
                         {
                             Dieta = g.Key,
-                            // ----- CORREÇÃO DE "DATETIME" (Value) -----
-                            TempoMedio = g.Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes)
+                            // ----- CORREÇÃO DE "TIMESPAN?" (Linha 70) -----
+                            // Trocado para .HoraFim.Value (corrige o CS1061)
+                            TempoMedio = g.Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes)
                         });
 
                     foreach (var item in porDieta)
@@ -84,7 +84,6 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public RelatorioViewModel GerarRelatorioErrosValidacao()
         {
             var entregasComErro = _entregas
-                // ----- CORREÇÃO DE "STATUS" -----
                 .Where(e => e.StatusValidacao == "Erro" ||
                            (e.Observacao != null && e.Observacao.ToLower().Contains("erro")))
                 .OrderByDescending(e => e.HoraInicio)
@@ -99,7 +98,6 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 DataFim = DateTime.Now
             };
 
-            // Estatísticas adicionais
             if (entregasComErro.Any())
             {
                 var errosPorCopeira = entregasComErro
@@ -125,11 +123,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
 
             if (paciente == null)
             {
-                return new RelatorioViewModel
-                {
-                    TipoRelatorio = "Paciente não encontrado",
-                    TotalErros = 0
-                };
+                return new RelatorioViewModel { /*...*/ };
             }
 
             var entregasPaciente = _entregas
@@ -142,17 +136,17 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 TipoRelatorio = $"Histórico do Paciente - {paciente.Nome} (Quarto {paciente.NumQuarto})",
                 Entregas = entregasPaciente,
                 DataInicio = entregasPaciente.Any() ? entregasPaciente.Min(e => e.HoraInicio) : DateTime.Now,
-                // ----- CORREÇÃO DE "DATETIME" (HasValue/Value) -----
-                DataFim = entregasPaciente.Any() && entregasPaciente.Any(e => e.HoraFim > DateTime.MinValue)
-                    ? entregasPaciente.Where(e => e.HoraFim > DateTime.MinValue).Max(e => e.HoraFim)
+
+                // ----- CORREÇÃO DE "DATETIME?" (Linha 146) -----
+                // Trocado para .HasValue e .Value
+                DataFim = entregasPaciente.Any() && entregasPaciente.Any(e => e.HoraFim.HasValue)
+                    ? entregasPaciente.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
                     : DateTime.Now
             };
 
-            // Estatísticas do paciente
             if (entregasPaciente.Any())
             {
                 var totalEntregas = entregasPaciente.Count;
-                // ----- CORREÇÃO DE "STATUS" -----
                 var entregasConcluidas = entregasPaciente.Count(e => e.StatusValidacao == "Concluída");
                 var entregasComErro = entregasPaciente.Count(e => e.StatusValidacao == "Erro");
 
@@ -162,15 +156,16 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 viewModel.TotalErros = entregasComErro;
 
                 var entregasComTempo = entregasPaciente
-                    // ----- CORREÇÃO DE "DATETIME" (HasValue) e "STATUS" -----
-                    .Where(e => e.HoraFim > DateTime.MinValue && e.StatusValidacao == "Concluída")
+                    // ----- CORREÇÃO DE "DATETIME?" (Linha 167) -----
+                    .Where(e => e.HoraFim.HasValue && e.StatusValidacao == "Concluída")
                     .ToList();
 
                 if (entregasComTempo.Any())
                 {
                     var tempoMedio = entregasComTempo
-                        // ----- CORREÇÃO DE "DATETIME" (Value) -----
-                        .Average(e => (e.HoraFim - e.HoraInicio).TotalMinutes);
+                        // ----- CORREÇÃO DE "TIMESPAN?" (Linha 173) -----
+                        // Trocado para .HoraFim.Value (corrige o CS1061)
+                        .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
 
                     viewModel.TemposMedios.Add("Tempo Médio de Entrega (min)", tempoMedio);
                 }

@@ -57,6 +57,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // ==================================================================
         // MÉTODO AUXILIAR: Carrega todos os dados com os Lookups
         // ==================================================================
+        // ----- INÍCIO DO MÉTODO CORRIGIDO -----
+
         private async Task<(List<Entrega>, List<Paciente>, List<Copeira>)> CarregarDadosRelatorioAsync()
         {
             // 1. Carrega todas as Copeiras e Pacientes (necessário para a lógica da classe Relatorio)
@@ -64,22 +66,36 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             var copeiras = await _context.Copeiras.Find(_ => true).ToListAsync();
 
             // 2. Pipeline para carregar Entregas com os Lookups (para a exibição na View)
-            var pipelineEntregas = _context.Entregas.Aggregate()
-                // LOOKUP Paciente
-                .Lookup(foreignCollection: _context.Pacientes, localField: e => e.IdPaciente, foreignField: p => p.Id, @as: (Entrega e) => e.DetalhesPaciente)
-                .Unwind<Entrega, Entrega>(e => e.DetalhesPaciente, new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
-                // LOOKUP Copeira
-                .Lookup(foreignCollection: _context.Copeiras, localField: e => e.IdCopeira, foreignField: c => c.Id, @as: (Entrega e) => e.DetalhesCopeira)
-                .Unwind<Entrega, Entrega>(e => e.DetalhesCopeira, new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
-                // LOOKUP Dieta
-                .Lookup(foreignCollection: _context.Dietas, localField: e => e.IdDieta, foreignField: d => d.Id, @as: (Entrega e) => e.DetalhesDieta)
-                .Unwind<Entrega, Entrega>(e => e.DetalhesDieta, new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
-                .ToListAsync();
 
-            var entregas = await pipelineEntregas;
+            // ----- CORREÇÃO -----
+            // Substituímos o pipeline antigo (que usava o "IdDieta" inexistente)
+            // pelo novo pipeline (que usa a Bandeja para encontrar a Dieta).
+            // Esta é a mesma lógica que usamos no EntregasController.
+
+            var pipeline = _context.Entregas.Aggregate()
+                // $lookup Paciente
+                .Lookup("Pacientes", "IdPaciente", "_id", "DetalhesPaciente")
+                .Unwind("DetalhesPaciente", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
+
+                // $lookup Copeira
+                .Lookup("Copeiras", "IdCopeira", "_id", "DetalhesCopeira")
+                .Unwind("DetalhesCopeira", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
+
+                // $lookup Bandeja (Etapa 1)
+                .Lookup("Bandejas", "IdBandeja", "_id", "DetalhesBandeja")
+                .Unwind("DetalhesBandeja", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
+
+                // $lookup Dieta (Etapa 2 - Através da Bandeja)
+                .Lookup("Dietas", "DetalhesBandeja.TipoDieta", "_id", "DetalhesDieta")
+                .Unwind("DetalhesDieta", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true });
+
+            // O "pipeline.ToListAsync()" executa a consulta
+            var entregas = await pipeline.ToListAsync();
 
             return (entregas, pacientes, copeiras);
         }
+
+        // ----- FIM DO MÉTODO CORRIGIDO -----
 
         // ==================================================================
         // GET: Relatorios/Gerar/TempoMedio

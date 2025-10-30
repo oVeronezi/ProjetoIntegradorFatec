@@ -9,32 +9,29 @@
 <p>
     <a asp-action="Create" class="btn btn-success">Registrar Nova Entrega</a>
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.HoraInicio)
+                Início
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HoraFim)
+                Fim
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.StatusValidacao)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Observacao)
+                Paciente
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdPaciente)
+                Copeira
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdCopeira)
+                Bandeja
             </th>
             <th>
-                Dieta
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdBandeja)
+                Duração
             </th>
             <th></th>
         </tr>
@@ -44,59 +41,60 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.HoraInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HoraFim)
-                </td>
-                <td>
-                    <strong>@Html.DisplayFor(modelItem => item.StatusValidacao)</strong>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Observacao)
+                    @item.HoraInicio.ToLocalTime().ToString("dd/MM HH:mm:ss")
                 </td>
 
                 <td>
-                    @if (item.DetalhesPaciente != null)
+                    @if (item.HoraFim.HasValue)
                     {
-                        @Html.DisplayFor(modelItem => item.DetalhesPaciente.Nome)
+                        @item.HoraFim.Value.ToLocalTime().ToString("dd/MM HH:mm:ss")
                     }
                     else
                     {
-                        <span class="text-danger">Não Encontrado</span>
+                        <form asp-action="Finalizar" asp-route-id="@item.Id" method="post" style="margin:0;">
+                            <button type="submit" class="btn btn-sm btn-success">Finalizar</button>
+                        </form>
                     }
                 </td>
 
                 <td>
-                    @if (item.DetalhesCopeira != null)
+                    @if (item.HoraFim.HasValue)
                     {
-                        @Html.DisplayFor(modelItem => item.DetalhesCopeira.Nome)
+                        <span class="text-success" style="font-weight:bold;">
+                            @Html.DisplayFor(modelItem => item.StatusValidacao)
+                        </span>
                     }
                     else
                     {
-                        <span class="text-danger">Não Encontrado</span>
+                        <span class="text-warning" style="font-weight:bold;">
+                            @Html.DisplayFor(modelItem => item.StatusValidacao)
+                        </span>
                     }
                 </td>
 
                 <td>
-                    @if (item.DetalhesDieta != null)
-                    {
-                        @Html.DisplayFor(modelItem => item.DetalhesDieta.NomeDieta)
-                    }
-                    else
-                    {
-                        <span class="text-danger">Não Encontrado</span>
-                    }
+                    @(item.DetalhesPaciente?.Nome ?? "N/A")
+                </td>
+                <td>
+                    @(item.DetalhesCopeira?.Nome ?? "N/A")
+                </td>
+                <td>
+                    @(item.DetalhesBandeja?.CodBandeja ?? "N/A")
                 </td>
 
                 <td>
-                    @if (item.DetalhesBandeja != null)
+                    @if (item.HoraFim.HasValue)
                     {
-                        @Html.DisplayFor(modelItem => item.DetalhesBandeja.CodBandeja)
+                        TimeSpan duracao = item.HoraFim.Value - item.HoraInicio;
+
+                        <strong>@duracao.ToString(@"m\m\ s\s")</strong>
                     }
                     else
                     {
-                        <span class="text-danger">Inválida</span>
+                        <span class="timer-em-progresso"
+                              data-horainicio="@item.HoraInicio.ToString("o")">
+                            Calculando...
+                        </span>
                     }
                 </td>
 
@@ -109,3 +107,55 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        // Esta função atualiza todos os cronómetros na página
+        function atualizarCronometros() {
+            // 1. Encontra todos os elementos com a classe 'timer-em-progresso'
+            const timers = document.querySelectorAll('.timer-em-progresso');
+
+            timers.forEach(timer => {
+                // 2. Pega a Hora de Início (em UTC) que colocámos no HTML
+                const horaInicioString = timer.getAttribute('data-horainicio');
+                const horaInicio = new Date(horaInicioString);
+
+                // 3. Pega a hora atual
+                const agora = new Date();
+
+                // 4. Calcula a diferença em milissegundos
+                // (O new Date() local já ajusta o UTC para o fuso horário do navegador)
+                let diffMs = agora - horaInicio;
+                if (diffMs < 0) diffMs = 0;
+
+                // 5. Converte milissegundos para horas, minutos e segundos
+                let diffSegundos = Math.floor(diffMs / 1000);
+                let horas = Math.floor(diffSegundos / 3600);
+                diffSegundos %= 3600;
+                let minutos = Math.floor(diffSegundos / 60);
+                let segundos = diffSegundos % 60;
+
+                // 6. Formata para "HH:MM:SS" (com zero à esquerda)
+                const strMinutos = String(minutos).padStart(2, '0');
+                const strSegundos = String(segundos).padStart(2, '0');
+
+                let tempoDecorrido;
+                if (horas > 0) {
+                    const strHoras = String(horas).padStart(2, '0');
+                    tempoDecorrido = `${strHoras}:${strMinutos}:${strSegundos}`;
+                } else {
+                    tempoDecorrido = `${strMinutos}:${strSegundos}`;
+                }
+
+                // 7. Exibe o tempo no elemento
+                timer.textContent = tempoDecorrido;
+            });
+        }
+
+        // 8. Roda a função pela primeira vez
+        atualizarCronometros();
+
+        // 9. Roda a função a cada 1 segundo (1000 ms)
+        setInterval(atualizarCronometros, 1000);
+    </script>
+}

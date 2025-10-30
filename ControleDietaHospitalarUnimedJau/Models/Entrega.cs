@@ -19,11 +19,8 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [Display(Name = "Paciente")]
         public Guid IdPaciente { get; set; }
 
-        [BsonElement("IdDieta")]
-        [BsonRepresentation(BsonType.String)]
-        [Required]
-        [Display(Name = "Dieta")]
-        public Guid? IdDieta { get; set; } // Pode ser nulo
+        // ----- PROPRIEDADE "IdDieta" REMOVIDA DAQUI -----
+        // A ligação à Dieta agora é feita através da Bandeja
 
         [BsonElement("IdCopeira")]
         [BsonRepresentation(BsonType.String)]
@@ -33,16 +30,17 @@ namespace ControleDietaHospitalarUnimedJau.Models
 
         [BsonElement("HoraInicio")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        [Display(Name = "Início da Entrega")]
-        public DateTime HoraInicio { get; set; }
+        // [Display(Name = "Início da Entrega")] // <-- Removido [Required] implicitamente
+        public DateTime HoraInicio { get; set; } // <-- Removido [Required]
 
         [BsonElement("HoraFim")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         [Display(Name = "Fim da Entrega")]
-        public DateTime HoraFim { get; set; }
+        public DateTime? HoraFim { get; set; }
 
         [BsonElement("IdBandeja")]
         [BsonRepresentation(BsonType.String)]
+        [Required] // <-- Adicionado [Required] aqui
         [Display(Name = "Bandeja")]
         public Guid IdBandeja { get; set; }
 
@@ -51,7 +49,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public string StatusValidacao { get; set; }
 
         [BsonElement("Observacao")]
-        public string Observacao { get; set; }
+        public string? Observacao { get; set; }
 
 
         // --- PROPRIEDADES DE NAVEGAÇÃO (CORRIGIDAS) ---

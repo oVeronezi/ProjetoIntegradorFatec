@@ -83,23 +83,34 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View();
         }
 
-        // POST: Entregas/Create (Completo)
+        // POST: Entregas/Create (Corrigido para Status Automático)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HoraInicio,HoraFim,StatusValidacao,Observacao,IdPaciente,IdCopeira,IdBandeja")] Entrega entrega)
+        // --- CORREÇÃO 1: Removido "StatusValidacao" do [Bind] ---
+        public async Task<IActionResult> Create([Bind("Observacao,IdPaciente,IdCopeira,IdBandeja")] Entrega entrega)
         {
             ModelState.Remove("DetalhesPaciente");
             ModelState.Remove("DetalhesCopeira");
             ModelState.Remove("DetalhesBandeja");
             ModelState.Remove("DetalhesDieta");
+            ModelState.Remove("HoraInicio");
+            ModelState.Remove("HoraFim");
+            // --- CORREÇÃO 2: Removemos o Status da validação ---
+            ModelState.Remove("StatusValidacao");
 
             if (ModelState.IsValid)
             {
                 entrega.Id = Guid.NewGuid();
+                entrega.HoraInicio = DateTime.UtcNow;
+                entrega.HoraFim = null;
+                // --- CORREÇÃO 3: Definir o Status automaticamente ---
+                entrega.StatusValidacao = "Em andamento";
+
                 await _context.Entregas.InsertOneAsync(entrega);
                 return RedirectToAction(nameof(Index));
             }
 
+            // Se a validação falhar, recarrega os ViewBags (código existente)
             var pacientes = await _context.Pacientes.Find(_ => true).ToListAsync();
             ViewBag.IdPaciente = new SelectList(pacientes, "Id", "Nome", entrega.IdPaciente);
 
@@ -236,5 +247,30 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         {
             return _context.Entregas.Find(e => e.Id == id).Any();
         }
+
+        // ----- INÍCIO DO NOVO MÉTODO "FINALIZAR" -----
+
+        // POST: Entregas/Finalizar/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Finalizar(Guid id)
+        {
+            // 1. Encontra a entrega no banco de dados
+            var entrega = await _context.Entregas.Find(m => m.Id == id).FirstOrDefaultAsync();
+
+            // 2. Verifica se ela existe e se ainda não foi finalizada
+            if (entrega != null && !entrega.HoraFim.HasValue)
+            {
+                // 3. Define a HoraFim e o novo Status
+                entrega.HoraFim = DateTime.UtcNow;
+                entrega.StatusValidacao = "Concluído"; // Ou "Entregue"
+
+                // 4. Salva a atualização no banco
+                await _context.Entregas.ReplaceOneAsync(m => m.Id == entrega.Id, entrega);
+            }
+
+            // 5. Retorna para a página Index
+            return RedirectToAction(nameof(Index));
+        }// ----- FIM DO MÉTODO "FINALIZAR" -----
     }
 }
