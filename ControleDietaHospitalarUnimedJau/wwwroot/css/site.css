@@ -35,6 +35,11 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+    .nav-link {
+        color: #00995D !important;
+        ;
+    }
+
     body.dark-mode {
         background-color: #333;
         color: white;
@@ -47,7 +52,7 @@ body {
 
         
         body.dark-mode .nav-link {
-            color: #bbb !important;
+            color: #00995D !important;
         }
 
         body.dark-mode footer {
@@ -107,6 +112,31 @@ body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) > * {
 /* Hover */
 body.dark-mode .table-hover > tbody > tr:hover > * {
     background-color: #343434 !important;
+}
+.card {
+    border-radius: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+.btn {
+    border-radius: 0.6rem;
+}
+
+
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border: 1px solid #333;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #ccc;
+    border-color: #555;
 }
 
 

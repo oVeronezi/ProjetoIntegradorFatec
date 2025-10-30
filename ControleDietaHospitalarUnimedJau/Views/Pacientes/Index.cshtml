@@ -4,78 +4,60 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Pacientes</h1>
+<div class="container mt-4">
+    <h2 class="fw-bold text-center">Pacientes</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Inserir Novo</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumQuarto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CodPulseira)
-            </th>
-            <th>
-                Dieta Vinculada
-            </th>
-            <th>
-                Itens Alimentares
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-action="Create" class="btn btn-success">+ Inserir Novo</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumQuarto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CodPulseira)
-                </td>
+            <div class="col">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary mb-2">@item.Nome</h5>
 
-                <td>
-                    @if (item.DietaVinculada != null)
-                    {
-                        @Html.DisplayFor(modelItem => item.DietaVinculada.NomeDieta)
-                    }
-                    else
-                    {
-                        <span>Não Vinculada</span>
-                    }
-                </td>
+                        <p class="mb-1"><strong>Quarto:</strong> @item.NumQuarto</p>
+                        <p class="mb-1"><strong>Cód. Pulseira:</strong> @item.CodPulseira</p>
 
-                <td>
-                    @if (item.DietaVinculada?.ItensAlimentares != null)
-                    {
-                        // Faz um loop dentro da célula para exibir cada item em uma nova linha
-                        @foreach (var dietaItem in item.DietaVinculada.ItensAlimentares)
+                        <hr />
+
+                        <p class="mb-1">
+                            <strong>Dieta:</strong>
+                            @if (item.DietaVinculada != null)
+                            {
+                                @item.DietaVinculada.NomeDieta
+                            }
+                            else
+                            {
+                                <span class="text-muted">Não vinculada</span>
+                            }
+                        </p>
+
+                        @if (item.DietaVinculada?.ItensAlimentares != null && item.DietaVinculada.ItensAlimentares.Any())
                         {
-                            <span class="d-block small text-muted">@dietaItem</span>
+                            <ul class="list-unstyled small text-muted mb-2">
+                                @foreach (var dietaItem in item.DietaVinculada.ItensAlimentares)
+                                {
+                                    <li>• @dietaItem</li>
+                                }
+                            </ul>
                         }
-                    }
-                    else
-                    {
-                        <span>---</span>
-                    }
-                </td>
+                        else
+                        {
+                            <p class="text-muted small mb-2">Sem itens alimentares</p>
+                        }
 
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Deletar</a>
-                </td>
-            </tr>
+                        <div class="d-flex justify-content-between mt-3">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Detalhes</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Deletar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
