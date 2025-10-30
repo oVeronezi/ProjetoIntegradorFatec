@@ -3,9 +3,8 @@ using ControleDietaHospitalarUnimedJau.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
-// 💡 ADICIONE ESTE USING
 using MongoDB.Driver.Linq;
-// 💡 ADICIONE ESTE USING
+// using Microsoft.AspNetCore.Authorization; // Descomente se for usar [Authorize]
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -21,22 +20,35 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
         // ==================================================================
         // GET: Relatorios (Tela de Seleção de Relatório)
+        // 💡 CORREÇÃO AQUI: Usando LINQ e Where para garantir que o Id não é null.
         // ==================================================================
         public async Task<IActionResult> Index()
         {
-            // Carrega a lista de Copeiras para o dropdown do relatório de Tempo Médio
-            ViewBag.Copeiras = new SelectList(
-                await _context.Copeiras.Find(_ => true).ToListAsync(),
-                "Id",
-                "NomeCopeira"
-            );
+            // --- Carrega a lista de Copeiras para o dropdown ----------------------
+            var copeiras = await _context.Copeiras.Find(_ => true).ToListAsync();
 
-            // Carrega a lista de Pacientes para o dropdown do relatório de Histórico
-            ViewBag.Pacientes = new SelectList(
-                await _context.Pacientes.Find(_ => true).ToListAsync(),
-                "Id",
-                "Nome"
-            );
+            // Garantimos que o ID é válido e mapeamos para SelectListItem.
+            ViewBag.Copeiras = copeiras
+                .Where(c => c.Id != null) // Filtra IDs nulos
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Nome
+                })
+                .ToList();
+
+            // --- Carrega a lista de Pacientes para o dropdown ---------------------
+            var pacientes = await _context.Pacientes.Find(_ => true).ToListAsync();
+
+            // Garantimos que o ID é válido e mapeamos para SelectListItem.
+            ViewBag.Pacientes = pacientes
+                .Where(p => p.Id != null) // Filtra IDs nulos
+                .Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Nome
+                })
+                .ToList();
 
             // Retorna a view para o usuário escolher o tipo de relatório
             return View();
