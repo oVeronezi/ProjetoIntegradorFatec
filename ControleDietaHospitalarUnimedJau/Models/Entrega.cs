@@ -49,6 +49,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
         public string StatusValidacao { get; set; }
 
         [BsonElement("Observacao")]
+        [Display(Name = "Observação")]
         public string? Observacao { get; set; }
 
 

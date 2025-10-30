@@ -7,7 +7,7 @@
 <h1>Pacientes</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Criar Novo</a>
+    <a asp-action="Create" class="btn btn-success">Inserir Novo</a>
 </p>
 <table class="table">
     <thead>
@@ -71,9 +71,9 @@
                 </td>
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn border border-1 ">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Deletar</a>
                 </td>
             </tr>
         }
