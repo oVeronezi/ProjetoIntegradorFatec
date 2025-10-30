@@ -1,0 +1,46 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel
+
+<h3>⏱️ Detalhe: Tempo Médio de Entrega por Dieta</h3>
+<p class="text-muted">Estes são os tempos médios de entrega, em minutos, calculados para cada tipo de dieta.</p>
+
+@if (Model.TemposMedios != null && Model.TemposMedios.Any())
+{
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="thead-dark">
+            <tr>
+                <th>Dieta</th>
+                <th>Tempo Médio (Minutos)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TemposMedios)
+            {
+                <tr>
+                    <td>@item.Key</td> @* O item.Key é o nome da Dieta *@
+                    <td>
+                        @* Formata o tempo para ter no máximo 2 casas decimais *@
+                        <strong>@item.Value.ToString("F2")</strong>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">
+        Nenhum dado de tempo médio encontrado para esta seleção.
+    </div>
+}
+
+@* Opcional: Se a lógica do seu RelatorioViewModel carregar as entregas 
+    (Model.Entregas), você pode adicionar uma tabela com os detalhes brutos aqui.
+*@
+@if (Model.Entregas != null && Model.Entregas.Any())
+{
+    <h4 class="mt-5">Dados Brutos das Entregas Envolvidas</h4>
+    <p class="text-muted">Detalhes das entregas usadas para calcular os tempos médios.</p>
+    @* Aqui você incluiria um loop para exibir os detalhes de Model.Entregas *@
+    @* Exemplo: *@
+    @* <table class="table table-sm">...</table> *@
+}

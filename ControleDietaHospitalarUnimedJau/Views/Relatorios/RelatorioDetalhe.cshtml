@@ -1,0 +1,45 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Relatório";
+}
+
+<div class="container mt-4">
+
+    <h1>Resultados do Relatório</h1>
+    <hr />
+
+    <div class="alert alert-info" role="alert">
+        Relatório Gerado: <strong>@Model.TipoRelatorio</strong>
+    </div>
+
+    @* Usamos um switch ou if/else para renderizar a secção correta com base no tipo de relatório *@
+
+    @switch (Model.TipoRelatorio)
+    {
+        case "TempoMédio":
+            <partial name="_RelatorioTempoMedio" model="Model" />
+            break;
+
+        case "ErrosValidação":
+            <partial name="_RelatorioErrosValidacao" model="Model" />
+            break;
+
+        case "HistoricoPaciente":
+            <partial name="_RelatorioHistoricoPaciente" model="Model" />
+            break;
+
+        default:
+            <div class="alert alert-warning">
+                Não foi possível identificar o tipo de relatório para exibição.
+            </div>
+            break;
+    }
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Seleção de Relatórios
+        </a>
+    </div>
+
+</div>
