@@ -8,14 +8,14 @@
     <h2 class="fw-bold text-center">Copeiras</h2>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <a asp-action="Create" class="btn btn-success">+ Inserir Nova</a>
+        <a asp-action="Create" class="btn btn-success"><img src="~/img/person_add.svg" alt="Adicionar Copeira" /></a>
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var item in Model)
         {
             <div class="col">
-                <div class="card shadow-sm h-100 border-0">
+                <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <h5 class="card-title text-primary mb-3">@item.Nome</h5>
 
