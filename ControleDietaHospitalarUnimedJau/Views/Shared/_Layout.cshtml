@@ -9,43 +9,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ControleDietaHospitalarUnimedJau.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=dark_mode" />
 </head>
 <body>
     <header>
-        <!--<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Controle Dieta Hospitalar Unimed Jau</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dietas" asp-action="Index">Dietas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Copeiras" asp-action="Index">Copeiras</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Entregas" asp-action="Index">Entregas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Relatorios" asp-action="Index">Relatorios</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>-->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="@Url.Content("~/img/layout_set_logo.png")" alt="Logo Unimed" /></a>
@@ -77,9 +44,9 @@
                         
 
                     </ul>
-                    <button id="toggle-dark" class="btn btn-outline-secondary ms-auto">
-                        🌙
-                    </button>
+                    <div id="toggle-dark" class="ms-auto">
+                        
+                    </div>
                 </div>
             </div>
         </nav>
@@ -100,19 +67,44 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
+        // 1. Cria a tag <img> (ainda sem 'src')
+        const img = document.createElement("img");
         const toggle = document.getElementById('toggle-dark');
         const body = document.body;
+        
+        img.classList.add('zoom');
+
+        // 2. Adiciona a tag <img> vazia dentro do seu botão 'toggle'
+        toggle.appendChild(img);
+
+        // 3. Função que decide qual ícone mostrar
+        function atualizarIcone() {
+            if (body.classList.contains('dark-mode')) {
+                // Se ESTIVER em dark-mode, mostra a Lua
+                img.src = "./img/lua_dark_mode.svg";
+                img.alt = "Mudar para modo claro";
+            } else {
+                img.src = "./img/sol_light_mode.png"; 
+                img.alt = "Mudar para modo escuro";
+            }
+        }
 
         if (localStorage.getItem('dark-mode') === 'true') {
             body.classList.add('dark-mode');
-            toggle.textContent = '☀️';
         }
+        atualizarIcone();
 
         toggle.addEventListener('click', () => {
+            // Inverte a classe
             body.classList.toggle('dark-mode');
+
+            // Verifica o novo estado e salva no localStorage
             const isDark = body.classList.contains('dark-mode');
             localStorage.setItem('dark-mode', isDark);
-            toggle.textContent = isDark ? '☀️' : '🌙';
+
+            // 7. CHAMA A FUNÇÃO NOVAMENTE
+            // (para trocar o ícone após o clique)
+            atualizarIcone();
         });
     </script>
 
