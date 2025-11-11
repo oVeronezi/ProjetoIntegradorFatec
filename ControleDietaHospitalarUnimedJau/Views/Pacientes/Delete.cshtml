@@ -34,9 +34,10 @@
             Dieta
         </dt>
         <dd class="col-sm-10">
-            @if (Model.DietaVinculada != null)
+
+            @if (Model.DetalhesDieta != null)
             {
-                <strong>@Html.DisplayFor(model => model.DietaVinculada.NomeDieta)</strong>
+                <strong>@Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)</strong>
             }
             else
             {
@@ -47,7 +48,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Excluir" class="btn btn-danger" /> 
+        <input type="submit" value="Excluir" class="btn btn-danger" />
         <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
     </form>
 </div>

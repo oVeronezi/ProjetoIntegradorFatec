@@ -1,53 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes; // Necessário para o BsonIgnoreExtraElements
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace ControleDietaHospitalarUnimedJau.Models
 {
+    // ----- INÍCIO DA CORREÇÃO -----
+    // Este atributo diz ao MongoDB para ignorar campos
+    // (como "Entregas") que existem no banco mas não nesta classe.
+    [BsonIgnoreExtraElements]
+    // ----- FIM DA CORREÇÃO -----
     public class Paciente
     {
         [BsonId]
         [BsonRepresentation(BsonType.String)]
         public Guid Id { get; set; }
+
+        [BsonElement("Nome")]
         [Required(ErrorMessage = "O nome do paciente é obrigatório")]
         [StringLength(255)]
         public string Nome { get; set; }
+
+        [BsonElement("NumQuarto")]
         [Required(ErrorMessage = "O número do quarto é obrigatório")]
         [Display(Name = "Número do Quarto")]
         public int NumQuarto { get; set; }
+
+        [BsonElement("CodPulseira")]
         [Required(ErrorMessage = "O código da pulseira é obrigatório")]
         [StringLength(50)]
         [Display(Name = "Código da Pulseira")]
-        public string CodPulseira { get; set; } // alterar aqui caso o código seja apenas de números
-        //public int? DietaId { get; set; }
+        public string CodPulseira { get; set; }
 
+        [BsonElement("IdDieta")]
         [BsonRepresentation(BsonType.String)]
         [Required(ErrorMessage = "A dieta do paciente é obrigatória")]
+        [Display(Name = "Dieta")]
         public Guid IdDieta { get; set; }
 
-
-        // 🚨 CORREÇÃO CRÍTICA AQUI 🚨
-        [BsonIgnoreIfNull]
-        [BindNever] // 👈 Adicionado para ignorar esta propriedade no POST do formulário
-        public Dieta DietaVinculada { get; set; }
-
-        [BindNever] // Adicionado para ignorar esta coleção no POST do formulário
-        public ICollection<Entrega> Entregas { get; set; }
-        public Paciente()
-        {
-            Entregas = new List<Entrega>();
-        }
-        public bool ValidarDieta(string CodBandeja) //alterar tipo caso seja diferente
-        {
-            return true;
-        }
-        public List<Entrega> ObterHistoricoEntregas()
-        {
-            return new List<Entrega>(Entregas);
-        }
+        // Propriedade de navegação para o $lookup (correta, sem [BsonIgnore])
+        public Dieta DetalhesDieta { get; set; }
     }
 }
