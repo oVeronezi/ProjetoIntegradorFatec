@@ -2,7 +2,86 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Bem vindo ao controle de dietas hospitalares</h1>
-    <p>Gerencie dietas, entregas e relatórios de forma rápida e integrada.</p>
+<div><br /><br /><br /><br /><br /></div>
+<div class="container d-flex align-items-center justify-content-center">
+    <div class="text-center">
+        <h1 class="display-5 mb-5">Bem-vindo ao controle de dietas hospitalares</h1>
+
+        <div class="row justify-content-center g-4">
+            
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+              
+                <a class="text-decoration-none" asp-controller="Dietas" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Dietas</h5>
+                            <p class="card-text">Ver Dietas</p>
+                    </div>
+                </div>
+			</a>
+            </div>
+           
+            
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+                <a class="text-decoration-none" asp-controller=" Entregas" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Entregas</h5>
+                            <p class="card-text">Ver Entregas</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            
+           
+
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+                <a class="text-decoration-none" asp-controller=" Bandejas" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Bandejas</h5>
+                            <p class="card-text">Ver Bandejas</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            
+            
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+                <a class="text-decoration-none" asp-controller="Relatorios" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Relatórios</h5>
+                            <p class="card-text">Ver Relatórios</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+          
+           
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+                <a class="text-decoration-none"  asp-controller="Pacientes" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Pacientes</h5>
+                            <p class="card-text">Ver Pacientes</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            
+            
+            <div class="col-10 col-sm-6 col-md-4 col-lg-3">
+                <a class="text-decoration-none" asp-controller="Copeiras" asp-action="Index">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-2">Copeiras</h5>
+                            <p class="card-text">Ver Copeiras</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+           
+        </div>
+    </div>
 </div>

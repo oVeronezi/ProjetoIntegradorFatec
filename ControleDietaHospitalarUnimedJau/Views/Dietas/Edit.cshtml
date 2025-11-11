@@ -13,7 +13,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group"">
+            <div class="form-group">
                 <label asp-for="NomeDieta" class="control-label"></label>
                 <input asp-for="NomeDieta" class="form-control" />
                 <span asp-validation-for="NomeDieta" class="text-danger"></span>
@@ -26,7 +26,7 @@
 {
 @string.Join("\n", Model.ItensAlimentares)
 }
-</textarea>
+                </textarea>
                 
                 <span asp-validation-for="ItensAlimentares" class="text-danger"></span>
             </div>
@@ -35,7 +35,7 @@
                 <input type="submit" value="Salvar" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
             </div>
-        </form>
+     <</form>
     </div>
 </div>
 
