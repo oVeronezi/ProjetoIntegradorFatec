@@ -9,8 +9,17 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <a asp-action="Create" class="btn btn-success"><img src="~/img/person_add.svg" alt="Adicionar Paciente" /></a>
-    </div>
 
+        <form asp-action="Index" method="get" class="d-flex" style="width: 40%;">
+            <input type="text" name="searchString" class="form-control me-2"
+                   placeholder="Buscar paciente pelo nome..."
+                   value="@ViewData["CurrentFilter"]" />
+
+            <input type="submit" value="Buscar" class="btn btn-primary" />
+
+            <a asp-action="Index" class="btn btn-outline-secondary ms-1">Limpar</a>
+        </form>
+    </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var item in Model)
         {
@@ -26,9 +35,10 @@
 
                         <p class="mb-1">
                             <strong>Dieta:</strong>
-                            @if (item.DietaVinculada != null)
+
+                            @if (item.DetalhesDieta != null)
                             {
-                                @item.DietaVinculada.NomeDieta
+                                @item.DetalhesDieta.NomeDieta
                             }
                             else
                             {
@@ -36,10 +46,10 @@
                             }
                         </p>
 
-                        @if (item.DietaVinculada?.ItensAlimentares != null && item.DietaVinculada.ItensAlimentares.Any())
+                        @if (item.DetalhesDieta?.ItensAlimentares != null && item.DetalhesDieta.ItensAlimentares.Any())
                         {
                             <ul class="list-unstyled small mb-2">
-                                @foreach (var dietaItem in item.DietaVinculada.ItensAlimentares)
+                                @foreach (var dietaItem in item.DetalhesDieta.ItensAlimentares)
                                 {
                                     <li>• @dietaItem</li>
                                 }
@@ -49,7 +59,6 @@
                         {
                             <p class="text-muted small mb-2">Sem itens alimentares</p>
                         }
-
                         <div class="d-flex justify-content-between mt-3">
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Editar</a>
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Detalhes</a>
