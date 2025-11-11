@@ -1,0 +1,33 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.Bandeja
+
+@{
+    ViewData["Title"] = "Excluir Bandeja";
+}
+
+<h1>Excluir Bandeja</h1>
+
+<h3>Tem a certeza de que quer excluir esta bandeja?</h3>
+<div>
+    <h4>Bandeja</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CodBandeja)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CodBandeja)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.TipoDieta)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Excluir" class="btn btn-danger" /> |
+        <a asp-action="Index">Voltar à Lista</a>
+    </form>
+</div>

@@ -1,0 +1,30 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.Bandeja
+
+@{
+    ViewData["Title"] = "Detalhes da Bandeja";
+}
+
+<h1>Detalhes da Bandeja</h1>
+
+<div>
+    <h4>Bandeja</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CodBandeja)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CodBandeja)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.TipoDieta)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a> |
+    <a asp-action="Index">Voltar à Lista</a>
+</div>
