@@ -8,12 +8,11 @@ namespace ControleDietaHospitalarUnimedJau.Models
     // Classe Relatorio - Serviço para geração de relatórios
     public class Relatorio
     {
-        // Dependências para acesso aos dados
+        // ... (Seu construtor e propriedades privadas aqui, não mudam) ...
         private readonly List<Entrega> _entregas;
         private readonly List<Paciente> _pacientes;
         private readonly List<Copeira> _copeiras;
 
-        // Construtor que recebe as coleções de dados
         public Relatorio(List<Entrega> entregas, List<Paciente> pacientes, List<Copeira> copeiras)
         {
             _entregas = entregas ?? new List<Entrega>();
@@ -21,42 +20,42 @@ namespace ControleDietaHospitalarUnimedJau.Models
             _copeiras = copeiras ?? new List<Copeira>();
         }
 
-        // Gera relatório de tempo médio de entrega por copeira
+
+        // ===============================================
+        // MÉTODO 1: TEMPO MÉDIO (COM A CHAVE)
+        // ===============================================
         public RelatorioViewModel GerarRelatorioTempoMedioDieta(Guid idCopeira)
         {
             var copeira = _copeiras.FirstOrDefault(c => c.Id == idCopeira);
 
             var entregasCopeira = _entregas
-                .Where(e => e.IdCopeira == idCopeira && e.StatusValidacao == "Concluída")
-                .ToList();
+                    .Where(e => e.IdCopeira == idCopeira &&
+                                (e.StatusValidacao == "Concluída" || e.StatusValidacao == "Correta"))
+                    .ToList();
 
             var viewModel = new RelatorioViewModel
             {
+                // ✅ ADIÇÃO DA CHAVE FIXA
+                ChaveTipoRelatorio = "TempoMedioCopeira",
+
+                // O título de exibição (dinâmico)
                 TipoRelatorio = $"Tempo Médio de Entrega - Copeira: {copeira?.Nome ?? "Desconhecida"}",
+
                 Entregas = entregasCopeira,
                 DataInicio = entregasCopeira.Any() ? entregasCopeira.Min(e => e.HoraInicio) : DateTime.Now,
-
-                // ----- CORREÇÃO DE "DATETIME?" (Linha 48) -----
-                // Trocado de "e.HoraFim > DateTime.MinValue" para "e.HoraFim.HasValue"
-                // Trocado de "e.HoraFim" para "e.HoraFim.Value"
                 DataFim = entregasCopeira.Any() && entregasCopeira.Any(e => e.HoraFim.HasValue)
                     ? entregasCopeira.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
                     : DateTime.Now
             };
 
+            // ... (O resto da sua lógica de cálculo de tempo médio continua aqui) ...
             if (entregasCopeira.Any())
             {
-                // ----- CORREÇÃO DE "DATETIME?" (Linha 54) -----
-                // Trocado para .HasValue
                 var entregasComTempo = entregasCopeira.Where(e => e.HoraFim.HasValue).ToList();
-
                 if (entregasComTempo.Any())
                 {
                     var tempoMedioGeral = entregasComTempo
-                        // ----- CORREÇÃO DE "TIMESPAN?" (Linha 60) -----
-                        // Trocado para .HoraFim.Value (corrige o CS1061)
                         .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
-
                     viewModel.TemposMedios.Add("Tempo Médio Geral", tempoMedioGeral);
 
                     var porDieta = entregasComTempo
@@ -65,32 +64,33 @@ namespace ControleDietaHospitalarUnimedJau.Models
                         .Select(g => new
                         {
                             Dieta = g.Key,
-                            // ----- CORREÇÃO DE "TIMESPAN?" (Linha 70) -----
-                            // Trocado para .HoraFim.Value (corrige o CS1061)
                             TempoMedio = g.Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes)
                         });
-
                     foreach (var item in porDieta)
                     {
                         viewModel.TemposMedios.Add($"Dieta {item.Dieta}", item.TempoMedio);
                     }
                 }
             }
-
             return viewModel;
         }
 
-        // Gera relatório de erros de validação
+        // ===============================================
+        // MÉTODO 2: ERROS (COM A CHAVE)
+        // ===============================================
         public RelatorioViewModel GerarRelatorioErrosValidacao()
         {
             var entregasComErro = _entregas
                 .Where(e => e.StatusValidacao == "Erro" ||
-                           (e.Observacao != null && e.Observacao.ToLower().Contains("erro")))
+                            (e.Observacao != null && e.Observacao.ToLower().Contains("erro")))
                 .OrderByDescending(e => e.HoraInicio)
                 .ToList();
 
             var viewModel = new RelatorioViewModel
             {
+                // ✅ ADIÇÃO DA CHAVE FIXA
+                ChaveTipoRelatorio = "ErrosValidacao",
+
                 TipoRelatorio = "Relatório de Erros de Validação",
                 Entregas = entregasComErro,
                 TotalErros = entregasComErro.Count,
@@ -98,6 +98,7 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 DataFim = DateTime.Now
             };
 
+            // ... (O resto da sua lógica de erros continua aqui) ...
             if (entregasComErro.Any())
             {
                 var errosPorCopeira = entregasComErro
@@ -106,24 +107,29 @@ namespace ControleDietaHospitalarUnimedJau.Models
                         g => $"Copeira ID {g.Key}",
                         g => (double)g.Count()
                     );
-
                 foreach (var item in errosPorCopeira)
                 {
                     viewModel.TemposMedios.Add(item.Key, item.Value);
                 }
             }
-
             return viewModel;
         }
 
-        // Gera relatório de histórico de um paciente
+        // ===============================================
+        // MÉTODO 3: PACIENTE (COM A CHAVE)
+        // ===============================================
         public RelatorioViewModel GerarRelatorioHistoricoPaciente(Guid idPaciente)
         {
             var paciente = _pacientes.FirstOrDefault(p => p.Id == idPaciente);
 
             if (paciente == null)
             {
-                return new RelatorioViewModel { /*...*/ };
+                return new RelatorioViewModel
+                {
+                    // ✅ ADIÇÃO DA CHAVE FIXA (para o caso de erro)
+                    ChaveTipoRelatorio = "NaoEncontrado",
+                    TipoRelatorio = "Erro: Paciente não encontrado"
+                };
             }
 
             var entregasPaciente = _entregas
@@ -133,17 +139,18 @@ namespace ControleDietaHospitalarUnimedJau.Models
 
             var viewModel = new RelatorioViewModel
             {
+                // ✅ ADIÇÃO DA CHAVE FIXA
+                ChaveTipoRelatorio = "HistoricoPaciente",
+
                 TipoRelatorio = $"Histórico do Paciente - {paciente.Nome} (Quarto {paciente.NumQuarto})",
                 Entregas = entregasPaciente,
                 DataInicio = entregasPaciente.Any() ? entregasPaciente.Min(e => e.HoraInicio) : DateTime.Now,
-
-                // ----- CORREÇÃO DE "DATETIME?" (Linha 146) -----
-                // Trocado para .HasValue e .Value
                 DataFim = entregasPaciente.Any() && entregasPaciente.Any(e => e.HoraFim.HasValue)
                     ? entregasPaciente.Where(e => e.HoraFim.HasValue).Max(e => e.HoraFim.Value)
                     : DateTime.Now
             };
 
+            // ... (O resto da sua lógica de histórico continua aqui) ...
             if (entregasPaciente.Any())
             {
                 var totalEntregas = entregasPaciente.Count;
@@ -156,21 +163,16 @@ namespace ControleDietaHospitalarUnimedJau.Models
                 viewModel.TotalErros = entregasComErro;
 
                 var entregasComTempo = entregasPaciente
-                    // ----- CORREÇÃO DE "DATETIME?" (Linha 167) -----
                     .Where(e => e.HoraFim.HasValue && e.StatusValidacao == "Concluída")
                     .ToList();
 
                 if (entregasComTempo.Any())
                 {
                     var tempoMedio = entregasComTempo
-                        // ----- CORREÇÃO DE "TIMESPAN?" (Linha 173) -----
-                        // Trocado para .HoraFim.Value (corrige o CS1061)
                         .Average(e => (e.HoraFim.Value - e.HoraInicio).TotalMinutes);
-
                     viewModel.TemposMedios.Add("Tempo Médio de Entrega (min)", tempoMedio);
                 }
             }
-
             return viewModel;
         }
     }

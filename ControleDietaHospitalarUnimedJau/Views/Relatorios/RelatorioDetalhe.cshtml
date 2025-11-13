@@ -9,36 +9,46 @@
     <h1>Resultados do Relatório</h1>
     <hr />
 
+    @* A barra azul (título) está correta e usa o TipoRelatorio (dinâmico) *@
     <div class="alert alert-info" role="alert">
         Relatório Gerado: <strong>@Model.TipoRelatorio</strong>
     </div>
 
-    @* Usamos um switch ou if/else para renderizar a secção correta com base no tipo de relatório *@
+    @* ===============================================
+       ✅ CORREÇÃO PRINCIPAL NO @SWITCH
+       Trocamos Model.TipoRelatorio por Model.ChaveTipoRelatorio
+       e usamos os nomes das chaves que definimos no Passo 2.
+    * =============================================== *@
 
-    @switch (Model.TipoRelatorio)
+    @switch (Model.ChaveTipoRelatorio)
     {
-        case "TempoMédio":
+        case "TempoMedioCopeira":
             <partial name="_RelatorioTempoMedio" model="Model" />
             break;
 
-        case "ErrosValidação":
+        case "ErrosValidacao":
+            @* Você precisará ter um arquivo _RelatorioErrosValidacao.cshtml *@
             <partial name="_RelatorioErrosValidacao" model="Model" />
             break;
 
         case "HistoricoPaciente":
+            @* Você precisará ter um arquivo _RelatorioHistoricoPaciente.cshtml *@
             <partial name="_RelatorioHistoricoPaciente" model="Model" />
             break;
 
         default:
+            @* Este é o bloco que você estava a ver (agora corrigido) *@
             <div class="alert alert-warning">
                 Não foi possível identificar o tipo de relatório para exibição.
+                (Chave recebida: @Model.ChaveTipoRelatorio)
             </div>
             break;
     }
 
     <div class="mt-4">
         <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Voltar para Seleção de Relatórios
+            @* <i class="fas fa-arrow-left"></i> *@ 
+            Voltar para Seleção de Relatórios
         </a>
     </div>
 

@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Acesso Negado";
+}
+<div class="container mx-auto p-4 max-w-lg mt-10">
+    <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-lg" role="alert">
+        <h1 class="text-3xl font-bold mb-2 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+            Acesso Negado
+        </h1>
+        <p class="mb-4">Você não possui permissão para visualizar este recurso. Por favor, entre em contato com um administrador se você acredita que isso é um erro.</p>
+        <hr class="border-red-300">
+        <p class="mt-2 text-sm">
+            <a asp-action="Index" asp-controller="Home" class="font-medium hover:text-red-800 transition duration-150 ease-in-out">
+                Voltar para a página inicial
+            </a>
+        </p>
+    </div>
+</div>

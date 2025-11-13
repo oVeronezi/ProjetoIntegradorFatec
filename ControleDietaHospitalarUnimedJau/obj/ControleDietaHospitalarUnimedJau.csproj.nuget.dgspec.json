@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pedro\\Desktop\\P.i\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj": {}
+    "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\clone\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pedro\\Desktop\\P.i\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj": {
+    "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\clone\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pedro\\Desktop\\P.i\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
+        "projectUniqueName": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\clone\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
         "projectName": "ControleDietaHospitalarUnimedJau",
-        "projectPath": "C:\\Users\\pedro\\Desktop\\P.i\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
-        "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pedro\\Desktop\\P.i\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\obj\\",
+        "projectPath": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\clone\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\ControleDietaHospitalarUnimedJau.csproj",
+        "packagesPath": "C:\\Users\\franc\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\franc\\OneDrive\\Área de Trabalho\\clone\\ProjetoIntegradorFatec\\ControleDietaHospitalarUnimedJau\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\franc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -101,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
