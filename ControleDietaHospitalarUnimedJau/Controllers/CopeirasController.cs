@@ -15,32 +15,33 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
     public class CopeirasController : Controller
     {
         private readonly ContextMongodb _context;
+        // --- CORREÇÃO 1: Adiciona o filtro padrão de "Ativos" ---
+        private readonly FilterDefinition<Copeira> _filtroAtivos;
 
         public CopeirasController(ContextMongodb context)
         {
             _context = context;
+            // Define o filtro para buscar apenas copeiras ativas
+            _filtroAtivos = Builders<Copeira>.Filter.Eq(c => c.Ativo, true);
         }
 
         // GET: Copeiras
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Copeiras.Find(_ => true).ToListAsync());
+            // --- CORREÇÃO 2: Usa o _filtroAtivos ---
+            return View(await _context.Copeiras.Find(_filtroAtivos).ToListAsync());
         }
 
         // GET: Copeiras/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
+            // --- CORREÇÃO 3: Adiciona o filtro de Ativo ao Find ---
             var copeira = await _context.Copeiras
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (copeira == null)
-            {
-                return NotFound();
-            }
+                .Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (copeira == null) return NotFound();
 
             return View(copeira);
         }
@@ -52,15 +53,19 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // POST: Copeiras/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
- 
         public async Task<IActionResult> Create([Bind("Id,Nome")] Copeira copeira)
         {
+            ModelState.Remove("Ativo"); // Remove o 'Ativo' da validação
+
             if (ModelState.IsValid)
             {
                 copeira.Id = Guid.NewGuid();
+                // --- CORREÇÃO 4: Garante que a nova copeira é Ativa ---
+                // (O construtor que fizemos no Modelo já faz isto, 
+                // mas é uma boa prática garantir)
+                copeira.Ativo = true;
+
                 await _context.Copeiras.InsertOneAsync(copeira);
                 return RedirectToAction(nameof(Index));
             }
@@ -71,41 +76,40 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Copeiras/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var copeira = await _context.Copeiras.Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (copeira == null)
-            {
-                return NotFound();
-            }
+            // --- CORREÇÃO 5: Adiciona o filtro de Ativo ao Find ---
+            var copeira = await _context.Copeiras.Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (copeira == null) return NotFound();
+
             return View(copeira);
         }
 
-
         // POST: Copeiras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome")] Copeira copeira)
         {
-            if (id != copeira.Id)
-            {
-                return NotFound();
-            }
+            if (id != copeira.Id) return NotFound();
+
+            ModelState.Remove("Ativo");
+
+            // --- CORREÇÃO 6: Garante que a edição não desative a copeira ---
+            // O [Bind] só traz Id e Nome, então "Ativo" viria como 'false' (padrão)
+            // Nós definimos manualmente como 'true' antes de salvar.
+            copeira.Ativo = true;
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Agora o 'ReplaceOneAsync' salva o objeto com Ativo = true
                     await _context.Copeiras.ReplaceOneAsync(m => m.Id == copeira.Id, copeira);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CopeiraExists(copeira.Id))
+                    if (!await CopeiraExists(copeira.Id)) // Chamada ao helper atualizado
                     {
                         return NotFound();
                     }
@@ -118,23 +122,17 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             }
             return View(copeira);
         }
-    
-
 
         // GET: Copeiras/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
+            // --- CORREÇÃO 7: Adiciona o filtro de Ativo ao Find ---
             var copeira = await _context.Copeiras
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (copeira == null)
-            {
-                return NotFound();
-            }
+                .Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (copeira == null) return NotFound();
 
             return View(copeira);
         }
@@ -144,14 +142,22 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _context.Copeiras.DeleteOneAsync(u => u.Id == id);
+            // --- CORREÇÃO 8: Implementa o DELETE LÓGICO ---
+
+            var filter = Builders<Copeira>.Filter.Eq(c => c.Id, id);
+            // Define Ativo = false
+            var update = Builders<Copeira>.Update.Set(c => c.Ativo, false);
+
+            await _context.Copeiras.UpdateOneAsync(filter, update);
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CopeiraExists(Guid id)
+        // --- CORREÇÃO 9: Atualiza o Helper ---
+        private async Task<bool> CopeiraExists(Guid id)
         {
-            return _context.Copeiras.Find(e => e.Id == id).Any();
+            // Verifica apenas copeiras ativas
+            return await _context.Copeiras.Find(e => e.Id == id & e.Ativo == true).AnyAsync();
         }
     }
 }

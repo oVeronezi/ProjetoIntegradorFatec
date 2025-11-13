@@ -23,7 +23,9 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Dietas" asp-action="Index">Dietas</a>
                         </li>
@@ -86,10 +88,10 @@
         function atualizarIcone() {
             if (body.classList.contains('dark-mode')) {
                 // Se ESTIVER em dark-mode, mostra a Lua
-                img.src = "./img/lua_dark_mode.svg";
+                img.src = "/img/lua_dark_mode.svg";
                 img.alt = "Mudar para modo claro";
             } else {
-                img.src = "./img/sol_light_mode.png"; 
+                img.src = "/img/sol_light_mode.png"; 
                 img.alt = "Mudar para modo escuro";
             }
         }

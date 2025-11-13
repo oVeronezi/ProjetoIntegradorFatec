@@ -24,6 +24,8 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [BsonElement("ItensAlimentares")]
         [Display(Name = "Itens Alimentares")]
         public List<string> ItensAlimentares { get; set; }
+        [BsonElement("Ativo")]
+        public bool Ativo { get; set; }
 
         // Construtor para inicializar a lista de itens, evitando NullReferenceException
         public Dieta()
