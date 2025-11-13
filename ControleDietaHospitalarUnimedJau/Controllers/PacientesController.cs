@@ -15,39 +15,31 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
     public class PacientesController : Controller
     {
         private readonly ContextMongodb _context;
+        // Filtro padrão para buscar apenas pacientes ativos
+        private readonly FilterDefinition<Paciente> _filtroAtivos;
 
         public PacientesController(ContextMongodb context)
         {
             _context = context;
+            // Define o filtro padrão
+            _filtroAtivos = Builders<Paciente>.Filter.Eq(p => p.Ativo, true);
         }
 
-        // ------------------------------------------------------------------
-        // GET: Pacientes (LISTAGEM COM BUSCA + LOOKUP CORRIGIDO)
-        // ------------------------------------------------------------------
+        // GET: Pacientes (Correto)
         public async Task<IActionResult> Index(string searchString)
         {
-            // ----- INÍCIO DA LÓGICA DE BUSCA -----
-            var filter = Builders<Paciente>.Filter.Empty;
+            var filter = _filtroAtivos;
 
-            // Se a string de busca não for nula ou vazia, cria um filtro
             if (!String.IsNullOrEmpty(searchString))
             {
-                // "i" torna a busca case-insensitive (ignora maiúsculas/minúsculas)
-                // Isto filtra APENAS o campo "Nome" da coleção Pacientes.
-                filter = Builders<Paciente>.Filter.Regex("Nome", new BsonRegularExpression(searchString, "i"));
+                var filterBusca = Builders<Paciente>.Filter.Regex("Nome", new BsonRegularExpression(searchString, "i"));
+                filter = Builders<Paciente>.Filter.And(_filtroAtivos, filterBusca);
             }
 
-            ViewData["CurrentFilter"] = searchString; // Para manter o texto na caixa de busca
-            // ----- FIM DA LÓGICA DE BUSCA -----
+            ViewData["CurrentFilter"] = searchString;
 
-
-            // O pipeline de agregação com $lookup
             var pipeline = _context.Pacientes.Aggregate()
-                // 1. Aplica o filtro de busca ($match)
                 .Match(filter)
-
-                // 2. Faz o $lookup
-                // ----- CORREÇÃO DE NOME: "DietaVinculada" -> "DetalhesDieta" -----
                 .Lookup(
                     foreignCollection: _context.Dietas,
                     localField: p => p.IdDieta,
@@ -63,16 +55,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(await pipeline);
         }
 
-        // ------------------------------------------------------------------
-        // GET: Pacientes/Details/5 (LOOKUP CORRIGIDO)
-        // ------------------------------------------------------------------
+        // GET: Pacientes/Details/5 (Correto)
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null) return NotFound();
 
             var pipeline = _context.Pacientes.Aggregate()
-                .Match(p => p.Id == id)
-                // ----- CORREÇÃO DE NOME: "DietaVinculada" -> "DetalhesDieta" -----
+                .Match(p => p.Id == id & p.Ativo == true) // Filtro de ativo
                 .Lookup(
                     foreignCollection: _context.Dietas,
                     localField: p => p.IdDieta,
@@ -91,41 +80,35 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ==================================================================
-        // GET: Pacientes/Create (PREPARA FORMULÁRIO)
-        // ==================================================================
+        // GET: Pacientes/Create (Corrigido o Dropdown)
         public async Task<IActionResult> Create()
         {
             ViewBag.IdDieta = new SelectList(
-                await _context.Dietas.Find(_ => true).ToListAsync(),
+                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // <-- FILTRO APLICADO
                 "Id",
                 "NomeDieta"
             );
             return View();
         }
 
-        // ==================================================================
-        // POST: Pacientes/Create (MODELSTATE CORRIGIDO)
-        // ==================================================================
+        // POST: Pacientes/Create (Corrigido o Set de 'Ativo')
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
-            // ----- CORREÇÃO DE NOME: "DietaVinculada" -> "DetalhesDieta" -----
             ModelState.Remove("DetalhesDieta");
-
-            // (A remoção de "Entregas" não é mais necessária pois removemos do modelo)
 
             if (ModelState.IsValid)
             {
                 Paciente.Id = Guid.NewGuid();
+                Paciente.Ativo = true;
+
                 await _context.Pacientes.InsertOneAsync(Paciente);
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recarrega o dropdown em caso de erro
             ViewBag.IdDieta = new SelectList(
-                await _context.Dietas.Find(_ => true).ToListAsync(),
+                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // <-- FILTRO APLICADO
                 "Id",
                 "NomeDieta",
                 Paciente.IdDieta
@@ -133,18 +116,16 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ------------------------------------------------------------------
-        // GET: Pacientes/Edit/5 (CARREGA FORMULÁRIO E DIETAS)
-        // ------------------------------------------------------------------
+        // GET: Pacientes/Edit/5 (Corrigido o Dropdown)
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null) return NotFound();
 
-            var Paciente = await _context.Pacientes.Find(m => m.Id == id).FirstOrDefaultAsync();
+            var Paciente = await _context.Pacientes.Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
             if (Paciente == null) return NotFound();
 
             ViewBag.IdDieta = new SelectList(
-                await _context.Dietas.Find(_ => true).ToListAsync(),
+                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // <-- FILTRO APLICADO
                 "Id",
                 "NomeDieta",
                 Paciente.IdDieta
@@ -153,16 +134,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ------------------------------------------------------------------
-        // POST: Pacientes/Edit/5 (MODELSTATE CORRIGIDO)
-        // ------------------------------------------------------------------
+        // POST: Pacientes/Edit/5 (Correto)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta,Ativo")] Paciente Paciente) // Adicionado 'Ativo' ao Bind
         {
             if (id != Paciente.Id) return NotFound();
 
-            // ----- CORREÇÃO DE NOME: "DietaVinculada" -> "DetalhesDieta" -----
             ModelState.Remove("DetalhesDieta");
 
             if (ModelState.IsValid)
@@ -179,9 +157,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 }
             }
 
-            // Recarrega o dropdown em caso de erro
             ViewBag.IdDieta = new SelectList(
-                await _context.Dietas.Find(_ => true).ToListAsync(),
+                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // <-- FILTRO APLICADO
                 "Id",
                 "NomeDieta",
                 Paciente.IdDieta
@@ -189,16 +166,14 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ------------------------------------------------------------------
-        // GET: Pacientes/Delete/5 (LOOKUP CORRIGIDO)
-        // ------------------------------------------------------------------
+        // GET: Pacientes/Delete/5 (Correto)
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null) return NotFound();
 
+            // Filtro de ativo (correto)
             var pipeline = _context.Pacientes.Aggregate()
-                .Match(p => p.Id == id)
-                // ----- CORREÇÃO DE NOME: "DietaVinculada" -> "DetalhesDieta" -----
+                .Match(p => p.Id == id & p.Ativo == true)
                 .Lookup(
                     foreignCollection: _context.Dietas,
                     localField: p => p.IdDieta,
@@ -216,17 +191,15 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // ------------------------------------------------------------------
-        // POST: Pacientes/Delete/5
-        // ------------------------------------------------------------------
+        // POST: Pacientes/Delete/5 (Correto - Soft Delete)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _context.Pacientes.DeleteOneAsync(u => u.Id == id);
+            var filter = Builders<Paciente>.Filter.Eq(p => p.Id, id);
+            var update = Builders<Paciente>.Update.Set(p => p.Ativo, false); // Define Ativo = false
+            await _context.Pacientes.UpdateOneAsync(filter, update);
             return RedirectToAction(nameof(Index));
         }
-
-        // (O método PacientesExists foi removido pois não estava sendo usado)
     }
 }

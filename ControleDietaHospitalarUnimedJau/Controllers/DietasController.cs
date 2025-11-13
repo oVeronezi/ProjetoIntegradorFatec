@@ -17,32 +17,33 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
     public class DietasController : Controller
     {
         private readonly ContextMongodb _context;
+        // --- CORREÇÃO 1: Adiciona o filtro padrão de "Ativos" ---
+        private readonly FilterDefinition<Dieta> _filtroAtivos;
 
         public DietasController(ContextMongodb context)
         {
             _context = context;
+            // Define o filtro para buscar apenas dietas ativas
+            _filtroAtivos = Builders<Dieta>.Filter.Eq(d => d.Ativo, true);
         }
 
         // GET: Dietas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dietas.Find(_ => true).ToListAsync());
+            // --- CORREÇÃO 2: Usa o _filtroAtivos em vez de (_ => true) ---
+            return View(await _context.Dietas.Find(_filtroAtivos).ToListAsync());
         }
 
         // GET: Dietas/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
+            // --- CORREÇÃO 3: Adiciona o filtro de Ativo ao Find ---
             var Dieta = await _context.Dietas
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (Dieta == null)
-            {
-                return NotFound();
-            }
+                .Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (Dieta == null) return NotFound();
 
             return View(Dieta);
         }
@@ -55,13 +56,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
         // POST: Eventos/Create
         [HttpPost]
-        // --- ALTERAÇÃO 1 (CREATE) ---
-        // Removido "ItensAlimentares" do [Bind]
-        // Adicionado "string itensString" como parâmetro
         public async Task<IActionResult> Create([Bind("Id,NomeDieta")] Dieta dieta, string itensString)
         {
-            // --- ALTERAÇÃO 2 (CREATE) ---
-            // Adicionámos a lógica para converter a string em lista
             if (!string.IsNullOrEmpty(itensString))
             {
                 dieta.ItensAlimentares = itensString.Split('\n')
@@ -74,13 +70,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 dieta.ItensAlimentares = new List<string>();
             }
 
-            // --- ALTERAÇÃO 3 (CREATE) ---
-            // Removemos a validação do campo antigo
             ModelState.Remove("ItensAlimentares");
+            ModelState.Remove("Ativo"); // Remove o 'Ativo' da validação, pois o construtor já define
 
             if (ModelState.IsValid)
             {
                 dieta.Id = Guid.NewGuid();
+                // Nota: O construtor do 'Dieta.cs' que fizemos já define "Ativo = true"
                 await _context.Dietas.InsertOneAsync(dieta);
                 return RedirectToAction(nameof(Index));
             }
@@ -90,62 +86,52 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Dietas/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
+            // --- CORREÇÃO 4: Adiciona o filtro de Ativo ao Find ---
             var dieta = await _context.Dietas
-                .Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (dieta == null)
-            {
-                return NotFound();
-            }
+                .Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (dieta == null) return NotFound();
+
             return View(dieta);
         }
 
         // POST: Dietas/Edit/5
         [HttpPost]
-        // --- ALTERAÇÃO 1 (EDIT) ---
-        // Removido "ItensAlimentares" do [Bind]
-        // Adicionado "string itensString" como parâmetro
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,NomeDieta")] Dieta dieta, string itensString)
         {
-            if (id != dieta.Id)
-            {
-                return NotFound();
-            }
+            if (id != dieta.Id) return NotFound();
 
-            // --- ALTERAÇÃO 2 (EDIT) ---
-            // Adicionámos a lógica para converter a string em lista
             if (!string.IsNullOrEmpty(itensString))
             {
-                dieta.ItensAlimentares = itensString.Split('\n') // Divide por quebra de linha
-                                                  .Select(s => s.Trim()) // Remove espaços em branco
-                                                  .Where(s => !string.IsNullOrEmpty(s)) // Remove linhas vazias
-                                                  .ToList(); // Converte para Lista
+                dieta.ItensAlimentares = itensString.Split('\n')
+                                                  .Select(s => s.Trim())
+                                                  .Where(s => !string.IsNullOrEmpty(s))
+                                                  .ToList();
             }
             else
             {
-                // Se a caixa de texto estava vazia, define a lista como vazia
                 dieta.ItensAlimentares = new List<string>();
             }
 
-            // --- ALTERAÇÃO 3 (EDIT) ---
-            // Removemos a validação do campo antigo, pois tratámos dele manualmente
             ModelState.Remove("ItensAlimentares");
+            ModelState.Remove("Ativo"); // Remove o 'Ativo' da validação
 
+            // Define 'Ativo = true' manualmente para garantir que a edição não desative
+            dieta.Ativo = true;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Agora o objeto "dieta" está completo e será salvo corretamente
+                    // O objeto 'dieta' agora tem Ativo = true
                     await _context.Dietas.ReplaceOneAsync(m => m.Id == dieta.Id, dieta);
                 }
-                catch (DbUpdateConcurrencyException) // Nota: DbUpdateConcurrencyException é do EntityFramework, não do Mongo.
+                catch (DbUpdateConcurrencyException)
                 {
-                    if (!DietaExists(dieta.Id))
+                    // --- CORREÇÃO 6 (Helper): Chamada ao DietaExists atualizado ---
+                    if (!await DietaExists(dieta.Id)) // Verifica se a dieta (ativa) existe
                     {
                         return NotFound();
                     }
@@ -162,16 +148,12 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Dietas/Delete/
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var dieta = await _context.Dietas.Find(m => m.Id == id).FirstOrDefaultAsync();
-            if (dieta == null)
-            {
-                return NotFound();
-            }
+            // --- CORREÇÃO 5: Adiciona o filtro de Ativo ao Find ---
+            var dieta = await _context.Dietas.Find(m => m.Id == id & m.Ativo == true).FirstOrDefaultAsync();
+
+            if (dieta == null) return NotFound();
 
             return View(dieta);
         }
@@ -179,19 +161,23 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // POST: Dietas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Administrador")] 
-        // enquanto não tiver login, isso não funciona, já que não tem como autorizar o ADM a deletar
-        // quando add um login, descomentar essa linha
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _context.Dietas.DeleteOneAsync(u => u.Id == id);
+            // --- CORREÇÃO 6: Implementa o DELETE LÓGICO ---
+            // Em vez de apagar, fazemos um Update para definir Ativo = false
+
+            var filter = Builders<Dieta>.Filter.Eq(d => d.Id, id);
+            var update = Builders<Dieta>.Update.Set(d => d.Ativo, false); // Define Ativo = false
+
+            await _context.Dietas.UpdateOneAsync(filter, update);
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DietaExists(Guid id)
+        // --- CORREÇÃO 7: Atualiza o Helper para verificar apenas Ativos ---
+        private async Task<bool> DietaExists(Guid id)
         {
-            return _context.Dietas.Find(e => e.Id == id).Any();
+            return await _context.Dietas.Find(e => e.Id == id & e.Ativo == true).AnyAsync();
         }
     }
 }

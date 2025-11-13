@@ -39,7 +39,10 @@ namespace ControleDietaHospitalarUnimedJau.Models
         [Display(Name = "Dieta")]
         public Guid IdDieta { get; set; }
 
-        // Propriedade de navegação para o $lookup (correta, sem [BsonIgnore])
+        [BsonElement("Ativo")]
+        public bool Ativo { get; set; }
+
+        // Propriedade de navegação para o $lookup
         public Dieta DetalhesDieta { get; set; }
     }
 }
