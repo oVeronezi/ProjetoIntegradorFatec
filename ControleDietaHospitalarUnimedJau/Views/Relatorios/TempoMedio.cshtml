@@ -1,0 +1,166 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel
+
+@{
+    ViewData["Title"] = "Relatório - Tempo Médio";
+    // Layout null é crucial para o PDF ser gerado corretamente sem menus do site
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* Fonte e Cores Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        /* Identidade Visual Unimed */
+        .text-unimed {
+            color: #009c3b !important;
+        }
+
+        .bg-unimed {
+            background-color: #009c3b !important;
+            color: white !important;
+        }
+
+        .border-unimed {
+            border-color: #009c3b !important;
+        }
+
+        /* Cabeçalho do Relatório */
+        .header-relatorio {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #009c3b;
+            padding-bottom: 20px;
+        }
+
+        /* Estilização da Tabela */
+        .table thead th {
+            background-color: #009c3b;
+            color: white;
+            border-color: #009c3b;
+            text-align: center;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f2fcf5;
+        }
+        /* Verde muito suave */
+        .table td {
+            vertical-align: middle;
+        }
+
+        /* Regras para Impressão e PDF */
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+            /* Esconde os botões no PDF */
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+
+        <div class="text-right mb-4 no-print">
+            <a href="@Url.Action("GerarTempoMedioPdf", "Relatorios", new { idCopeira = Context.Request.Query["idCopeira"] })" class="btn btn-danger shadow-sm">
+                <i class="bi bi-file-earmark-pdf"></i> Baixar PDF
+            </a>
+            <a href="javascript:window.history.back()" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+
+        <div class="header-relatorio">
+            <h2 class="text-unimed font-weight-bold text-uppercase">@Model.TipoRelatorio</h2>
+            <p class="text-muted mb-0">Período de Análise: @Model.DataInicio.ToString("dd/MM/yyyy") até @Model.DataFim.ToString("dd/MM/yyyy")</p>
+            <small>Gerado em: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+
+        <div class="row mb-4 justify-content-center">
+            @foreach (var stat in Model.TemposMedios)
+            {
+                <div class="col-md-4 col-6 mb-3">
+                    <div class="card border-unimed text-center h-100 shadow-sm">
+                        <div class="card-header bg-transparent border-0 pb-0 pt-3">
+                            <h6 class="text-muted text-uppercase mb-0 font-weight-bold" style="font-size: 0.8rem;">@stat.Key</h6>
+                        </div>
+                        <div class="card-body pt-2 pb-3">
+                            <h2 class="text-unimed font-weight-bold mb-0">@stat.Value.ToString("F1") <small style="font-size:0.5em; color: #666;">min</small></h2>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <h4 class="text-unimed mb-3 mt-5 border-left pl-3" style="border-width: 5px !important;">Detalhamento das Entregas</h4>
+
+        <table class="table table-bordered table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Paciente</th>
+                    <th>Dieta</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Duração</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Entregas != null && Model.Entregas.Any())
+                {
+                    foreach (var item in Model.Entregas)
+                    {
+                        <tr>
+                            <td>@item.HoraInicio.ToLocalTime().ToString("dd/MM")</td>
+
+                            <td class="text-left">@(item.DetalhesPaciente?.Nome ?? "---")</td>
+
+                            <td>@(item.DetalhesDieta?.NomeDieta ?? "---")</td>
+
+                            <td>@item.HoraInicio.ToLocalTime().ToString("HH:mm")</td>
+
+                            <td>@(item.HoraFim.HasValue? item.HoraFim.Value.ToLocalTime().ToString("HH:mm") : "-")</td>
+
+                            <td>
+                                @if (item.HoraFim.HasValue)
+                                {
+                                    <strong class="text-dark">@((item.HoraFim.Value - item.HoraInicio).ToString(@"hh\:mm\:ss"))</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-warning font-weight-bold small">Em andamento</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i>Nenhuma entrega finalizada encontrada para esta seleção.</i>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-center mt-5 no-print">
+            <hr />
+            <p class="text-muted small">Sistema de Controle de Dietas Hospitalar - Unimed Jaú</p>
+        </div>
+    </div>
+</body>
+</html>

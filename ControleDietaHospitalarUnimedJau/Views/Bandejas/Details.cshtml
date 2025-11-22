@@ -4,27 +4,46 @@
     ViewData["Title"] = "Detalhes da Bandeja";
 }
 
-<h1>Detalhes da Bandeja</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-3">
 
-<div>
-    <h4>Bandeja</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CodBandeja)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.CodBandeja)
-        </dd>
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.TipoDieta)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a> |
-    <a asp-action="Index">Voltar à Lista</a>
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-inbox"></i> Detalhes da Bandeja</h4>
+                    @if (Model.Ativo)
+                    {
+                        <span class="badge bg-white text-success px-3 py-2 rounded-pill">Ativa</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger text-white px-3 py-2 rounded-pill">Inativa</span>
+                    }
+                </div>
+
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <div class="mb-4">
+                                <small class="text-uppercase fw-bold">Código da Bandeja</small>
+                                <h3 class="fw-bold">@Html.DisplayFor(model => model.CodBandeja)</h3>
+                            </div>
+                            <div>
+                                <small class="text-uppercase fw-bold">Tipo de Dieta</small>
+                                <h4 class="text-success">
+                                    <i class="bi bi-cup-hot"></i>
+                                    @(Model.DetalhesDieta?.NomeDieta ?? "Dieta não encontrada")
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer p-4 border-top-0 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Voltar</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success px-4 shadow-sm">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

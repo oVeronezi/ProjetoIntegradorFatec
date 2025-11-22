@@ -54,10 +54,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View();
         }
 
-        // POST: Eventos/Create
+        // POST: Dietas/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        // 1. Recebe 'itensString' do formulário
         public async Task<IActionResult> Create([Bind("Id,NomeDieta")] Dieta dieta, string itensString)
         {
+            // 2. Converte o texto (itensString) para a Lista (ItensAlimentares)
             if (!string.IsNullOrEmpty(itensString))
             {
                 dieta.ItensAlimentares = itensString.Split('\n')
@@ -70,16 +73,19 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 dieta.ItensAlimentares = new List<string>();
             }
 
+            // 3. Remove validações que não vêm do formulário
             ModelState.Remove("ItensAlimentares");
-            ModelState.Remove("Ativo"); // Remove o 'Ativo' da validação, pois o construtor já define
+            ModelState.Remove("Ativo");
 
             if (ModelState.IsValid)
             {
                 dieta.Id = Guid.NewGuid();
-                // Nota: O construtor do 'Dieta.cs' que fizemos já define "Ativo = true"
+                dieta.Ativo = true; // 4. Garante que nasce Ativa
+
                 await _context.Dietas.InsertOneAsync(dieta);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(dieta);
         }
 

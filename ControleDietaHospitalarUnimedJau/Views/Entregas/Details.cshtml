@@ -1,84 +1,90 @@
 ﻿@model ControleDietaHospitalarUnimedJau.Models.Entrega
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Entrega";
 }
 
-<h1>Details</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-lg border-0 rounded-3">
 
-<div>
-    <h4>Entrega</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HoraInicio)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HoraInicio)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HoraFim)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HoraFim)
-        </dd>
+                <div class="card-header bg-success d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold text-white"><i class="bi bi-truck"></i> Detalhes da Entrega</h4>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusValidacao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StatusValidacao)
-        </dd>
+                    @if (Model.StatusValidacao == "Concluído")
+                    {
+                        <span class="badge text-success px-3 py-2 rounded-pill"><i class="bi bi-check2-all"></i> Concluído</span>
+                    }
+                    else if (Model.StatusValidacao == "Erro")
+                    {
+                        <span class="badge bg-danger px-3 py-2 rounded-pill">Erro</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Em andamento</span>
+                    }
+                </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Observacao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Observacao)
-        </dd>
+                <div class="card-body p-5">
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPaciente)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.DetalhesPaciente != null)
-            {
-                @Html.DisplayFor(model => model.DetalhesPaciente.Nome)
-            }
-        </dd>
+                    <div class="row mb-5 text-center">
+                        <div class="col-md-4">
+                            <small class="text-uppercase fw-bold">Início</small>
+                            <div class="fs-5">@Model.HoraInicio.ToLocalTime().ToString("HH:mm:ss")</div>
+                            <div class="small ">@Model.HoraInicio.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-arrow-right fs-1 text-success opacity-50"></i>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-uppercase fw-bold">Fim</small>
+                            @if (Model.HoraFim.HasValue)
+                            {
+                                <div class="fs-5 text-success fw-bold">@Model.HoraFim.Value.ToLocalTime().ToString("HH:mm:ss")</div>
+                                <div class="small ">Duração: @((Model.HoraFim.Value - Model.HoraInicio).ToString(@"mm\m\ ss\s"))</div>
+                            }
+                            else
+                            {
+                                <div class="fs-5 text-warning">---</div>
+                            }
+                        </div>
+                    </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCopeira)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.DetalhesCopeira != null)
-            {
-                @Html.DisplayFor(model => model.DetalhesCopeira.Nome)
-            }
-        </dd>
+                    <hr class="my-4" style="opacity: 0.1;">
 
-        <dt class="col-sm-2">
-            Dieta
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.DetalhesDieta != null)
-            {
-                @Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)
-            }
-        </dd>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded h-100 border">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-person"></i> Paciente</h6>
+                                <p class="mb-1 fw-bold">@(Model.DetalhesPaciente?.Nome ?? "N/A")</p>
+                                <small class="">Quarto: @(Model.DetalhesPaciente?.NumQuarto.ToString() ?? "?")</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded h-100 border">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-person-badge"></i> Responsáveis</h6>
+                                <p class="mb-1"><strong>Copeira:</strong> @(Model.DetalhesCopeira?.Nome ?? "N/A")</p>
+                                <p class="mb-0"><strong>Bandeja:</strong> @(Model.DetalhesBandeja?.CodBandeja ?? "N/A")</p>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdBandeja)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.DetalhesBandeja != null)
-            {
-                @Html.DisplayFor(model => model.DetalhesBandeja.CodBandeja)
-            }
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-light">Editar</a> |
-    <a asp-action="Index" class="btn btn-secondary">Voltar á lista</a>
+                        <div class="col-12">
+                            <div class="p-3 border rounded ">
+                                <small class="text-uppercase  fw-bold">Observações</small>
+                                <p class="mb-0 mt-1 fst-italic">
+                                    @(string.IsNullOrEmpty(Model.Observacao) ? "Sem observações registradas." : Model.Observacao)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer p-4 border-top-0 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Voltar</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success px-4 shadow-sm">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

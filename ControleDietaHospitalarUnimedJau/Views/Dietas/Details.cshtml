@@ -1,30 +1,79 @@
 ﻿@model ControleDietaHospitalarUnimedJau.Models.Dieta
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Dieta";
 }
 
-<h1>Detalhes</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                
+                <div class="card-header bg-success d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-card-list"></i> Detalhes da Dieta</h4>
+                    @if (Model.Ativo)
+                    {
+                        <span class="badge bg-white text-success px-3 py-2 rounded-pill">
+                            <i class="bi bi-check-circle-fill"></i> Ativo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger  px-3 py-2 rounded-pill">
+                            <i class="bi bi-x-circle-fill"></i> Inativo
+                        </span>
+                    }
+                </div>
 
-<div>
-    <h4>Dieta</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeDieta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeDieta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ItensAlimentares)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ItensAlimentares)
-        </dd>
-    </dl>
+                <div class="card-body p-5">
+                    
+                    <div class="mb-4 text-center">
+                        <small class="text-uppercase fw-bold tracking-wide">Nome da Dieta</small>
+                        <h1 class="display-6 text-dark fw-bold mt-1">@Html.DisplayFor(model => model.NomeDieta)</h1>
+                    </div>
+
+                    <hr class="my-4" style="opacity: 0.1;">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-success mb-3"><i class="bi bi-basket"></i> Itens Alimentares</h5>
+                            
+                            @if (Model.ItensAlimentares != null && Model.ItensAlimentares.Any())
+                            {
+                                <div class="p-4 rounded-3">
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var alimento in Model.ItensAlimentares)
+                                        {
+                                            <li class="mb-2 d-flex align-items-center">
+                                                <span class="text-success me-2">✔</span> 
+                                                <span class="fs-5">@alimento</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <div>Nenhum item alimentar cadastrado para esta dieta.</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer p-4 border-top-0 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-arrow-left"></i> Voltar à Lista
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success px-4 shadow-sm">
+                        <i class="bi bi-pencil-square"></i> Editar Dieta
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-light">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
-</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

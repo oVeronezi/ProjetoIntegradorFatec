@@ -1,10 +1,10 @@
 ﻿@model ControleDietaHospitalarUnimedJau.Models.Dieta
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar Dieta";
 }
 
-<h1>Criar</h1>
+<h1>Criar Nova Dieta</h1>
 
 <h4>Dieta</h4>
 <hr />
@@ -12,32 +12,28 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="NomeDieta" class="control-label"></label>
                 <input asp-for="NomeDieta" class="form-control" />
                 <span asp-validation-for="NomeDieta" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ItensAlimentares" class="control-label"></label>
 
-                <textarea name="itensString" class="form-control" rows="5"></textarea>
-
-                <span asp-validation-for="ItensAlimentares" class="text-danger"></span>
+            <div class="form-group mt-3">
+                <label class="control-label">Itens Alimentares (um por linha)</label>
+                <textarea name="itensString" class="form-control" rows="5" placeholder="Exemplo:&#10;Arroz&#10;Feijão&#10;Carne"></textarea>
             </div>
-            <br />
-            
-            <div class="form-group">
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Criar" class="btn btn-success" />
-                <a asp-action="Index" class="btn btn-secondary">Voltar a lista</a>
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

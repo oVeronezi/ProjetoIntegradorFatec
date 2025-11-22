@@ -95,7 +95,7 @@ namespace ControleDietaHospitalarUnimedJau
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            Rotativa.AspNetCore.RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
             app.Run();
         }
     }

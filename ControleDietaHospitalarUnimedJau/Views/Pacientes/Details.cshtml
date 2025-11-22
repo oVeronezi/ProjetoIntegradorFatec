@@ -1,51 +1,68 @@
 ﻿@model ControleDietaHospitalarUnimedJau.Models.Paciente
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Paciente";
 }
 
-<h1>Detalhes</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-3">
 
-<div>
-    <h4>Paciente</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumQuarto)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NumQuarto)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CodPulseira)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CodPulseira)
-        </dd>
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-person-vcard"></i> Detalhes do Paciente</h4>
+                    @if (Model.Ativo)
+                    {
+                        <span class="badge text-success px-3 py-2 rounded-pill"><i class="bi bi-check-circle-fill"></i> Ativo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger text-white px-3 py-2 rounded-pill"><i class="bi bi-x-circle-fill"></i> Inativo</span>
+                    }
+                </div>
 
-        <dt class="col-sm-2">
-            Dieta
-        </dt>
-        <dd class="col-sm-10">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="mb-2"><i class="bi bi-person-circle display-1 text-success opacity-50"></i></div>
+                        <h1 class="fw-bold">@Html.DisplayFor(model => model.Nome)</h1>
+                    </div>
 
-            @if (Model.DetalhesDieta != null)
-            {
-                <strong>@Html.DisplayFor(model => model.DetalhesDieta.NomeDieta)</strong>
-            }
-            else
-            {
-                <span class="text-danger">Dieta Não Encontrada (ID: @Model.IdDieta)</span>
-            }
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-light">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary  ">Voltar à lista</a>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded  h-100">
+                                <small class="text-uppercase  fw-bold">Quarto</small>
+                                <div class="fs-4 text-success"><i class="bi bi-hospital"></i> @Html.DisplayFor(model => model.NumQuarto)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded  h-100">
+                                <small class="text-uppercase  fw-bold">Cód. Pulseira</small>
+                                <div class="fs-4"><i class="bi bi-upc-scan"></i> @Html.DisplayFor(model => model.CodPulseira)</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="p-3 border rounded ">
+                                <small class="text-uppercase  fw-bold">Dieta Prescrita</small>
+                                <div class="fs-5 mt-1">
+                                    @if (Model.DetalhesDieta != null)
+                                    {
+                                        <span class="text-success fw-bold"><i class="bi bi-apple"></i> @Model.DetalhesDieta.NomeDieta</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Dieta não vinculada</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer p-4 border-top-0 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Voltar</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success px-4 shadow-sm">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

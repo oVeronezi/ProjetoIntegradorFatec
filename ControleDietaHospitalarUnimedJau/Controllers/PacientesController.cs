@@ -134,14 +134,19 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(Paciente);
         }
 
-        // POST: Pacientes/Edit/5 (Correto)
+        // POST: Pacientes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta,Ativo")] Paciente Paciente) // Adicionado 'Ativo' ao Bind
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,NumQuarto,CodPulseira,IdDieta")] Paciente Paciente)
         {
             if (id != Paciente.Id) return NotFound();
 
             ModelState.Remove("DetalhesDieta");
+            ModelState.Remove("Ativo"); // Remove validação caso exista
+
+            // ----- CORREÇÃO: O paciente editado deve continuar Ativo -----
+            Paciente.Ativo = true;
+            // ------------------------------------------------------------
 
             if (ModelState.IsValid)
             {
@@ -157,8 +162,9 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 }
             }
 
+            // Recarrega o dropdown em caso de erro
             ViewBag.IdDieta = new SelectList(
-                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // <-- FILTRO APLICADO
+                await _context.Dietas.Find(d => d.Ativo == true).ToListAsync(), // Lembra-te de usar o filtro de ativos aqui também
                 "Id",
                 "NomeDieta",
                 Paciente.IdDieta
