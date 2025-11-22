@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
-using Rotativa.AspNetCore; // Biblioteca de PDF
+using Rotativa.AspNetCore;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -20,12 +20,9 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             _context = context;
         }
 
-        // ============================================================
         // 1. MENU PRINCIPAL
-        // ============================================================
         public async Task<IActionResult> Index()
         {
-            // Carrega filtros para a View Index
             var copeiras = await _context.Copeiras.Find(c => c.Ativo == true).ToListAsync();
             ViewBag.Copeiras = new SelectList(copeiras, "Id", "Nome");
 
@@ -36,29 +33,26 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // ============================================================
-        // 2. RELATÓRIO NA TELA (HTML)
+        // RELATÓRIO 1: TEMPO MÉDIO (Tela + PDF)
         // ============================================================
+
+        // Tela (HTML)
         [HttpGet]
         public async Task<IActionResult> GerarTempoMedio(Guid idCopeira)
         {
             var viewModel = await ConstruirViewModelTempoMedio(idCopeira);
-            // No método GerarTempoMedio (HTML)
+            // USA O CAMINHO EXPLÍCITO PARA EVITAR ERRO 404
             return View("~/Views/Relatorios/TempoMedio.cshtml", viewModel);
-
-            // No método GerarTempoMedioPdf (PDF)
-            return new ViewAsPdf("~/Views/Relatorios/TempoMedio.cshtml", viewModel);
         }
 
-        // ============================================================
-        // 3. RELATÓRIO EM PDF (Ação de Download)
-        // ============================================================
+        // PDF
         [HttpGet]
         public async Task<IActionResult> GerarTempoMedioPdf(Guid idCopeira)
         {
             var viewModel = await ConstruirViewModelTempoMedio(idCopeira);
 
-            // Retorna a mesma View "TempoMedio", mas convertida em PDF
-            return new ViewAsPdf("TempoMedio", viewModel)
+            // USA O CAMINHO EXPLÍCITO PARA EVITAR ERRO 404
+            return new ViewAsPdf("~/Views/Relatorios/TempoMedio.cshtml", viewModel)
             {
                 FileName = $"Relatorio_Copeira_{DateTime.Now:yyyyMMdd_HHmm}.pdf",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
@@ -68,24 +62,87 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // ============================================================
-        // MÉTODOS AUXILIARES (Helpers)
+        // RELATÓRIO 2: HISTÓRICO PACIENTE (Tela + PDF)
         // ============================================================
 
-        // Constrói o objeto de dados para o relatório
+        [HttpGet]
+        public async Task<IActionResult> GerarHistoricoPaciente(Guid idPaciente)
+        {
+            var viewModel = await ConstruirViewModelHistorico(idPaciente);
+            // CAMINHO EXPLÍCITO
+            return View("~/Views/Relatorios/HistoricoPaciente.cshtml", viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GerarHistoricoPacientePdf(Guid idPaciente)
+        {
+            var viewModel = await ConstruirViewModelHistorico(idPaciente);
+            // CAMINHO EXPLÍCITO
+            return new ViewAsPdf("~/Views/Relatorios/HistoricoPaciente.cshtml", viewModel)
+            {
+                FileName = $"Historico_Paciente_{DateTime.Now:yyyyMMdd_HHmm}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--print-media-type --enable-local-file-access --disable-smart-shrinking"
+            };
+        }
+
+        // ============================================================
+        // RELATÓRIO 3: ERROS DE VALIDAÇÃO (Tela + PDF)
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> GerarErrosValidacao()
+        {
+            var viewModel = await ConstruirViewModelErros();
+            return View("ErrosValidacao", viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GerarErrosValidacaoPdf()
+        {
+            var viewModel = await ConstruirViewModelErros();
+            return new ViewAsPdf("ErrosValidacao", viewModel)
+            {
+                FileName = $"Erros_Validacao_{DateTime.Now:yyyyMMdd_HHmm}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--print-media-type --enable-local-file-access --disable-smart-shrinking"
+            };
+        }
+
+        // ============================================================
+        // MÉTODOS AUXILIARES (Necessários para tudo funcionar)
+        // ============================================================
+
         private async Task<RelatorioViewModel> ConstruirViewModelTempoMedio(Guid idCopeira)
         {
-            // Chama o método que carrega tudo do banco (O QUE ESTAVA FALTANDO)
             var dados = await CarregarDadosCompletosAsync();
-
             var servicoRelatorio = new Relatorio(dados.Entregas, dados.Pacientes, dados.Copeiras);
             var viewModel = servicoRelatorio.GerarRelatorioTempoMedioDieta(idCopeira);
-
             viewModel.ChaveTipoRelatorio = "TempoMedio";
-
             return viewModel;
         }
 
-        // Carrega todas as tabelas necessárias com os Lookups
+        private async Task<RelatorioViewModel> ConstruirViewModelHistorico(Guid idPaciente)
+        {
+            var dados = await CarregarDadosCompletosAsync();
+            var servicoRelatorio = new Relatorio(dados.Entregas, dados.Pacientes, dados.Copeiras);
+            var viewModel = servicoRelatorio.GerarRelatorioHistoricoPaciente(idPaciente);
+            viewModel.ChaveTipoRelatorio = "HistoricoPaciente";
+            return viewModel;
+        }
+
+        private async Task<RelatorioViewModel> ConstruirViewModelErros()
+        {
+            var dados = await CarregarDadosCompletosAsync();
+            var servicoRelatorio = new Relatorio(dados.Entregas, dados.Pacientes, dados.Copeiras);
+            var viewModel = servicoRelatorio.GerarRelatorioErrosValidacao();
+            viewModel.ChaveTipoRelatorio = "ErrosValidacao";
+            return viewModel;
+        }
+
+        // Carrega todos os dados do banco de uma vez
         private async Task<(List<Entrega> Entregas, List<Paciente> Pacientes, List<Copeira> Copeiras)> CarregarDadosCompletosAsync()
         {
             var pacientes = await _context.Pacientes.Find(_ => true).ToListAsync();
@@ -105,9 +162,5 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
             return (entregas, pacientes, copeiras);
         }
-
-        // Placeholders para evitar erros nos outros botões do menu Index
-        public IActionResult GerarErrosValidacao() { return Content("Em construção..."); }
-        public IActionResult GerarHistoricoPaciente(Guid idPaciente) { return Content("Em construção..."); }
     }
 }

@@ -1,0 +1,156 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel
+
+@{
+    ViewData["Title"] = "Relatório - Histórico do Paciente";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .text-unimed {
+            color: #009c3b !important;
+        }
+
+        .bg-unimed {
+            background-color: #009c3b !important;
+            color: white !important;
+        }
+
+        .border-unimed {
+            border-color: #009c3b !important;
+        }
+
+        .header-relatorio {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #009c3b;
+            padding-bottom: 20px;
+        }
+
+        .table thead th {
+            background-color: #009c3b;
+            color: white;
+            border-color: #009c3b;
+            text-align: center;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f2fcf5;
+        }
+
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+
+        <div class="text-right mb-4 no-print">
+            <a href="@Url.Action("GerarHistoricoPacientePdf", "Relatorios", new { idPaciente = Context.Request.Query["idPaciente"] })" class="btn btn-danger">
+                Baixar PDF
+            </a>
+            <a href="javascript:window.history.back()" class="btn btn-secondary">Voltar</a>
+        </div>
+
+        <div class="header-relatorio">
+            <h2 class="text-unimed font-weight-bold">@Model.TipoRelatorio</h2>
+            <p class="text-muted">Gerado em: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+
+        <div class="row mb-4 text-center">
+            <div class="col-4">
+                <div class="card border-unimed h-100">
+                    <div class="card-body">
+                        <h3 class="text-unimed font-weight-bold">@Model.Entregas.Count</h3>
+                        <small class="text-muted text-uppercase">Total Entregas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-unimed h-100">
+                    <div class="card-body">
+                        <h3 class="text-success font-weight-bold">
+                            @(Model.TemposMedios.ContainsKey("Entregas Concluídas") ? Model.TemposMedios["Entregas Concluídas"] : 0)
+                        </h3>
+                        <small class="text-muted text-uppercase">Concluídas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card border-danger h-100">
+                    <div class="card-body">
+                        <h3 class="text-danger font-weight-bold">@Model.TotalErros</h3>
+                        <small class="text-muted text-uppercase">Erros/Alertas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="text-unimed mb-3">Lista de Entregas</h4>
+        <table class="table table-bordered table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Dieta</th>
+                    <th>Copeira</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Entregas.Any())
+                {
+                    foreach (var item in Model.Entregas)
+                    {
+                        <tr>
+                            <td>@item.HoraInicio.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                            <td>@item.HoraInicio.ToLocalTime().ToString("HH:mm")</td>
+                            <td>@(item.DetalhesDieta?.NomeDieta ?? "-")</td>
+                            <td>@(item.DetalhesCopeira?.Nome ?? "-")</td>
+                            <td>
+                                @if (item.StatusValidacao == "Concluído")
+                                {
+                                    <span class="badge badge-success p-2">Concluído</span>
+                                }
+                                else if (item.StatusValidacao == "Erro")
+                                {
+                                    <span class="badge badge-danger p-2">Erro</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning text-dark p-2">@item.StatusValidacao</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="5" class="text-muted py-4">Nenhum registro encontrado para este paciente.</td></tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-center mt-5 no-print">
+            <hr />
+            <p class="text-muted small">Sistema de Controle de Dietas Hospitalar - Unimed Jaú</p>
+        </div>
+    </div>
+</body>
+</html>

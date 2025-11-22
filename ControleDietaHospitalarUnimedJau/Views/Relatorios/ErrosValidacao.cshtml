@@ -1,0 +1,70 @@
+﻿@model ControleDietaHospitalarUnimedJau.Models.RelatorioViewModel
+@{
+    ViewData["Title"] = "Relatório de Erros"; Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #fff; color: #333; }
+        .text-danger-custom { color: #dc3545 !important; }
+        .header-relatorio { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #dc3545; padding-bottom: 20px; }
+        .table thead th { background-color: #dc3545; color: white; border-color: #dc3545; text-align: center; }
+        .table-striped tbody tr:nth-of-type(odd) { background-color: #fdf2f2; } /* Vermelho muito suave */
+        @@media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="text-right mb-4 no-print">
+            <a href="@Url.Action("GerarErrosValidacaoPdf", "Relatorios")" class="btn btn-danger">Baixar PDF</a>
+            <a href="javascript:window.history.back()" class="btn btn-secondary">Voltar</a>
+        </div>
+
+        <div class="header-relatorio">
+            <h2 class="text-danger-custom font-weight-bold">@Model.TipoRelatorio</h2>
+            <p class="text-muted">Relatório de Inconsistências e Erros Operacionais</p>
+            <small>Gerado em: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+
+        <div class="alert alert-danger text-center">
+            <strong>Total de Ocorrências Encontradas:</strong> @Model.TotalErros
+        </div>
+
+        <table class="table table-bordered table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Paciente</th>
+                    <th>Copeira</th>
+                    <th>Tipo de Erro</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Entregas.Any())
+                {
+                    foreach (var item in Model.Entregas)
+                    {
+                        <tr>
+                            <td>@item.HoraInicio.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                            <td>@(item.DetalhesPaciente?.Nome ?? "-")</td>
+                            <td>@(item.DetalhesCopeira?.Nome ?? "-")</td>
+                            <td><span class="badge badge-danger">@item.StatusValidacao</span></td>
+                            <td class="text-left">@item.Observacao</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="5" class="text-success">Nenhum erro encontrado! O sistema está operando perfeitamente.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
