@@ -32,6 +32,9 @@ namespace ControleDietaHospitalarUnimedJau
             ContextMongodb.Database = builder.Configuration.GetSection("MongoConnection:Database").Value;
             ContextMongodb.IsSSL = Convert.ToBoolean(builder.Configuration.GetSection("MongoConnection:Isssl").Value);
 
+            // serviço de backup agendado
+            builder.Services.AddHostedService<MongoBackupService>();
+
             // 4. Configuração do Identity (Autenticação com MongoDB)
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
