@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+// System.IO.Compression não é mais necessário
 
 public class MongoBackupService : BackgroundService
 {
@@ -16,9 +17,16 @@ public class MongoBackupService : BackgroundService
         _logger = logger;
         _configuration = configuration;
 
-        // Caminho do mongodump (mantenha o seu caminho exato aqui)
-        _mongodumpPath = @"C:\mongodb-database-tools-windows-x86_64-100.13.0\mongodb-database-tools-windows-x86_64-100.13.0\bin\mongodump.exe";
+        // LÊ O CAMINHO DA CONFIGURAÇÃO (BackupConfig:MongodumpPath)
+        _mongodumpPath = configuration.GetValue<string>("BackupConfig:MongodumpPath");
+
+        if (string.IsNullOrEmpty(_mongodumpPath))
+        {
+            _logger.LogError("O caminho 'BackupConfig:MongodumpPath' não está configurado. O backup não será executado.");
+        }
     }
+
+    //----------------------------------------------------------------------------------
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -26,7 +34,6 @@ public class MongoBackupService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            // Lógica do Agendamento (inalterada)
             var config = _configuration.GetSection("BackupConfig");
             int targetHour = config.GetValue<int>("ExecutionHour");
             int targetMinute = config.GetValue<int>("ExecutionMinute");
@@ -42,7 +49,6 @@ public class MongoBackupService : BackgroundService
             var delay = nextRun - now;
             _logger.LogInformation($"Próximo backup agendado para: {nextRun} (faltam {delay.TotalHours:F1} horas).");
 
-            // Aguarda
             try
             {
                 await Task.Delay(delay, stoppingToken);
@@ -52,10 +58,9 @@ public class MongoBackupService : BackgroundService
                 break;
             }
 
-            // Executa Backup, Compactação e Limpeza
             try
             {
-                PerformBackupAndZipAndCleanup(); // <- Mudei a chamada do método
+                PerformBackupGzipAndCleanup();
             }
             catch (Exception ex)
             {
@@ -64,77 +69,88 @@ public class MongoBackupService : BackgroundService
         }
     }
 
-    // Método principal renomeado para refletir todas as funcionalidades
-    private void PerformBackupAndZipAndCleanup()
+    //----------------------------------------------------------------------------------
+
+    private void PerformBackupGzipAndCleanup()
     {
+        if (string.IsNullOrEmpty(_mongodumpPath))
+        {
+            _logger.LogError("Não é possível executar o backup: Caminho do mongodump não configurado.");
+            return;
+        }
+
         var config = _configuration.GetSection("BackupConfig");
         string dbName = config["DatabaseName"];
         string basePath = config["DirectoryPath"];
+        int retentionDays = config.GetValue<int>("RetentionDays", 30);
+
+        // LEITURA DA URI DE CONEXÃO DO ARQUIVO DE CONFIGURAÇÃO (appsettings.json)
+        string mongoUri = _configuration.GetValue<string>("mongoConnection:ConnectionString");
+
+        if (string.IsNullOrEmpty(mongoUri))
+        {
+            _logger.LogError("Connection String (mongoConnection:ConnectionString) não encontrada na configuração. O backup falhará.");
+            return;
+        }
 
         string folderName = DateTime.Now.ToString("yyyy-MM-dd_HHmm");
-        string dumpDirectoryPath = Path.Combine(basePath, folderName);
-        string zipFilePath = Path.Combine(basePath, $"{folderName}.zip");
-        int retentionDays = config.GetValue<int>("RetentionDays", 30); // Pega o valor da config
+        string gzFilePath = Path.Combine(basePath, $"{folderName}.gz");
 
         if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 
-        // --- 1. EXECUTAR MONGODUMP ---
-        _logger.LogInformation($"Iniciando processo de mongodump na pasta: {dumpDirectoryPath} 💾");
+        // --- 1. EXECUTAR MONGODUMP E CAPTURAR A SAÍDA ---
+        _logger.LogInformation($"Iniciando processo de mongodump e compactação GZIP para: {gzFilePath} 💾");
 
         var processInfo = new ProcessStartInfo
         {
             FileName = _mongodumpPath,
-            Arguments = $"--db {dbName} --out \"{dumpDirectoryPath}\"",
-            RedirectStandardOutput = true,
+
+            // CORREÇÃO: Usamos --uri para garantir que o mongodump se conecte.
+            // O caminho completo da URI deve estar entre aspas duplas, caso haja espaços ou caracteres especiais.
+            Arguments = $"--uri \"{mongoUri}\" --db {dbName} --archive --gzip",
+
+            RedirectStandardOutput = true,  // Necessário para ler o fluxo binário
             RedirectStandardError = true,
-            UseShellExecute = false,
+            UseShellExecute = false,        // Essencial para redirecionar streams
             CreateNoWindow = true
         };
 
         using (var process = Process.Start(processInfo))
         {
+            // BLOCO DE REDIRECIONAMENTO: LÊ A SAÍDA BINÁRIA E ESCREVE DIRETAMENTE NO ARQUIVO .GZ
+            using (var outputStream = process.StandardOutput.BaseStream)
+            using (var fileStream = new FileStream(gzFilePath, FileMode.Create, FileAccess.Write))
+            {
+                outputStream.CopyTo(fileStream);
+            }
+
             process.WaitForExit();
             string output = process.StandardError.ReadToEnd();
 
             if (process.ExitCode != 0)
             {
-                _logger.LogError($"Falha no backup. ExitCode: {process.ExitCode}. Detalhes: {output}");
+                _logger.LogError($"Falha no mongodump. ExitCode: {process.ExitCode}. Detalhes: {output}");
                 return;
             }
         }
 
-        // --- 2. COMPACTAR PARA ZIP ---
-        _logger.LogInformation("Backup BSON concluído. Iniciando compactação ZIP... 📁");
+        _logger.LogInformation($"Backup concluído com sucesso em formato GZIP: {gzFilePath} ✨");
 
-        try
-        {
-            ZipFile.CreateFromDirectory(dumpDirectoryPath, zipFilePath, CompressionLevel.Fastest, false);
-            _logger.LogInformation($"Compactação concluída com sucesso em: {zipFilePath}");
-
-            // --- 3. LIMPAR ARQUIVOS TEMPORÁRIOS ---
-            _logger.LogInformation($"Removendo pasta temporária: {dumpDirectoryPath}");
-            Directory.Delete(dumpDirectoryPath, recursive: true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Falha ao compactar/limpar a pasta temporária do backup. Verifique permissões.");
-        }
-
-        // --- 4. LIMPEZA DE ARQUIVOS ANTIGOS (NOVA FUNCIONALIDADE) ---
+        // --- 2. LIMPEZA DE ARQUIVOS ANTIGOS ---
         CleanupOldBackups(basePath, retentionDays);
     }
 
-    // NOVO MÉTODO PARA LIMPAR ARQUIVOS ZIP ANTIGOS
+    //----------------------------------------------------------------------------------
+
     private void CleanupOldBackups(string basePath, int retentionDays)
     {
         _logger.LogInformation($"Iniciando limpeza de backups com mais de {retentionDays} dias. 🗑️");
 
-        // Calcula a data limite para retenção (ex: 30 dias atrás)
         var retentionDate = DateTime.Now.AddDays(-retentionDays);
 
-        // Busca todos os arquivos .zip no diretório e filtra os antigos
-        var oldFiles = Directory.EnumerateFiles(basePath, "*.zip")
-                                .Where(f => File.GetCreationTime(f) < retentionDate);
+        // Buscando por arquivos .gz
+        var oldFiles = Directory.EnumerateFiles(basePath, "*.gz")
+                                 .Where(f => File.GetCreationTime(f) < retentionDate);
 
         int count = 0;
         foreach (var file in oldFiles)
