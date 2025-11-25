@@ -168,7 +168,7 @@ Paleta de cores, tipografia e wireframes serão definidos na etapa de prototipag
 
 ## 10. Protótipo
 
-Será desenvolvido um protótipo funcional em ferramenta de design como Figma.  
+  https://www.figma.com/design/c5hez5J1n6lQmMHrCtTWZu/Untitled?fuid=1297872424791518125
 
 `[A ser desenvolvido]`
 
