@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-namespace ProjetoMongoDb.Seed
+namespace ControleDietaHospitalarUnimedJau.Seed
 {
 
 
