@@ -8,9 +8,11 @@ using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize]
     public class RelatoriosController : Controller
     {
         private readonly ContextMongodb _context;

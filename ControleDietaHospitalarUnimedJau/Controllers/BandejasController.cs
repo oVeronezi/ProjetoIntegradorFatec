@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize]
     public class BandejasController : Controller
     {
         private readonly ContextMongodb _context;
@@ -32,6 +34,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Bandejas
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             // --- CORREÇÃO 3: Aplica o filtro de Ativos ---
@@ -44,6 +47,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Bandejas/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null) return NotFound();

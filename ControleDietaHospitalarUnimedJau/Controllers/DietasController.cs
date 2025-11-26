@@ -11,9 +11,11 @@ using Microsoft.EntityFrameworkCore; // Este using parece não ser necessário p
 using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize]
     public class DietasController : Controller
     {
         private readonly ContextMongodb _context;

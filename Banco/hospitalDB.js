@@ -1,130 +1,235 @@
-// Instale as Ferramentas: MongoDB Database Tools para o backup funcionar
-// 1. Seleciona o banco
+// 1. Seleciona e Limpa o Banco
 // use hospitalDB;
-
-// 2. LIMPEZA TOTAL: Apaga o banco antigo para evitar conflitos de IDs ou campos
 db.dropDatabase();
 
-// 3. DEFINIÇÃO DOS UUIDs
-const dietaLeveId = '3a96e1b0-9f5a-4c28-8e6f-7128f7d98301';
-const dietaRegularId = 'c0f3d4a2-1b8e-4f7c-9d0a-526e0b1c9a23';
-const dietaSodioId = 'e92d7b6f-4a3c-4e8a-b1d0-659f2c3d4a57';
+// --- FUNÇÕES AUXILIARES ---
+function gerarUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
-const copeiraMariaId = '1b8e4f7c-c0f3-4d4a-9d0a-526e0b1c9a24';
-const copeiraJoaoId = '4e8a3c4f-e92d-4b1d-0659-f2c3d4a57b6f';
+function itemAleatorio(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
 
-const pacienteCarlosId = '6f7128f7-d983-401a-96e1-b09f5a4c28e6';
-const pacienteAnaId = '8e6f7128-f7d9-4830-91a9-6e1b09f5a4c2';
+function numeroAleatorio(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-const entrega1Id = '9d0a526e-0b1c-49a2-c0f3-d4a21b8e4f7c';
-const entrega2Id = 'b1d0659f-2c3d-4a57-e92d-7b6f4a3c4e8a';
+// --- DADOS PARA GERAÇÃO ALEATÓRIA ---
+const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gabriel", "Helena", "Igor", "Julia", "Lucas", "Mariana", "Nicolas", "Olivia", "Pedro", "Rafaela", "Samuel", "Tatiane", "Vitor", "Yasmin"];
+const sobrenomes = ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes", "Costa", "Ribeiro", "Martins", "Carvalho", "Almeida"];
+const alimentos = ["Arroz", "Feijão", "Frango", "Peixe", "Carne Moída", "Purê", "Salada", "Sopa", "Gelatina", "Fruta", "Legumes", "Batata Doce", "Ovos", "Iogurte"];
+const tiposDieta = ["Geral", "Hipossódica", "Diabética", "Pastosa", "Líquida", "Branda", "Sem Glúten", "Hipercalórica"];
 
-const bandeja1Id = 'c7e8f9a0-d1b2-43c4-9e5f-10d2e3f4a5b6'; 
-const bandeja2Id = 'a1b2c3d4-e5f6-47a8-9b0c-d1e2f3a4b5c6'; 
+// Arrays para armazenar os IDs gerados (para criar relacionamentos)
+var idsDietas = [];
+var idsCopeiras = [];
+var idsBandejas = [];
+var idsPacientes = [];
 
+// ============================================================
+// 1. GERAR 150 DIETAS
+// ============================================================
+print("Gerando 150 Dietas...");
+for (var i = 0; i < 150; i++) {
+    var id = gerarUUID();
+    idsDietas.push(id);
+    
+    var nomeDieta = itemAleatorio(tiposDieta) + " - Opção " + (i + 1);
+    // Gera uma lista de 3 a 5 alimentos
+    var qtdItens = numeroAleatorio(3, 5);
+    var listaItens = [];
+    for(var j=0; j<qtdItens; j++) { listaItens.push(itemAleatorio(alimentos)); }
 
-// ----- 4. INSERÇÃO DE DADOS (COM "Ativo: true") -----
+    db.Dietas.insertOne({
+        _id: id,
+        NomeDieta: nomeDieta,
+        ItensAlimentares: listaItens,
+        Ativo: true
+    });
+}
 
-// --- DIETAS ---
-db.Dietas.insertMany([
-  {
-    _id: dietaLeveId,
-    NomeDieta: "Dieta Leve",
-    ItensAlimentares: ["200g de Sopa de legumes", "150g de Purê de batata", "100g de Gelatina de morango"],
-    Ativo: true // <-- Necessário para o Delete Lógico
-  },
-  {
-    _id: dietaRegularId,
-    NomeDieta: "Dieta Regular",
-    ItensAlimentares: ["120g de Arroz integral", "180g de Frango grelhado", "50g de Salada verde", "300ml de Suco natural"],
-    Ativo: true
-  },
-  {
-    _id: dietaSodioId,
-    NomeDieta: "Dieta com restrição de sódio",
-    ItensAlimentares: ["150g de Salmão assado", "100g de Brócolis cozido no vapor", "100g de Quinoa", "200ml de Água de coco"],
-    Ativo: true
-  }
-]);
+// ============================================================
+// 2. GERAR 150 COPEIRAS
+// ============================================================
+print("Gerando 150 Copeiras...");
+for (var i = 0; i < 150; i++) {
+    var id = gerarUUID();
+    idsCopeiras.push(id);
+    
+    var nomeCompleto = itemAleatorio(nomes) + " " + itemAleatorio(sobrenomes);
 
-// --- COPEIRAS ---
-db.Copeiras.insertMany([
-  {
-    _id: copeiraMariaId,
-    Nome: "Maria Aparecida",
-    Ativo: true
-  },
-  {
-    _id: copeiraJoaoId,
-    Nome: "João Silva",
-    Ativo: true
-  }
-]);
+    db.Copeiras.insertOne({
+        _id: id,
+        Nome: nomeCompleto,
+        Ativo: true
+    });
+}
 
-// --- BANDEJAS ---
-db.Bandejas.insertMany([
-  {
-    _id: bandeja1Id,
-    CodBandeja: "B12345-L-201",
-    TipoDieta: dietaLeveId,
-    Ativo: true
-  },
-  {
-    _id: bandeja2Id,
-    CodBandeja: "B67890-R-305",
-    TipoDieta: dietaRegularId,
-    Ativo: true
-  }
-]);
+// ============================================================
+// 3. GERAR 150 BANDEJAS
+// ============================================================
+print("Gerando 150 Bandejas...");
+for (var i = 0; i < 150; i++) {
+    var id = gerarUUID();
+    idsBandejas.push(id);
+    
+    // Vincula a uma dieta aleatória
+    var idDietaVinculada = itemAleatorio(idsDietas); 
+    var codigo = "BDJ-" + (1000 + i);
 
-// --- PACIENTES ---
-db.Pacientes.insertMany([
-  {
-    _id: pacienteCarlosId,
-    Nome: "Carlos Eduardo",
-    NumQuarto: 201,
-    CodPulseira: "P12345",
-    IdDieta: dietaLeveId,
-    Ativo: true
-  },
-  {
-    _id: pacienteAnaId,
-    Nome: "Ana Beatriz",
-    NumQuarto: 305,
-    CodPulseira: "P67890",
-    IdDieta: dietaRegularId,
-    Ativo: true
-  }
-]);
+    db.Bandejas.insertOne({
+        _id: id,
+        CodBandeja: codigo,
+        TipoDieta: idDietaVinculada,
+        Ativo: true
+    });
+}
 
-// --- ENTREGAS ---
-db.Entregas.insertMany([
-  {
-    _id: entrega1Id,
-    IdPaciente: pacienteCarlosId,
-    IdCopeira: copeiraMariaId,
-    HoraInicio: new Date("2025-09-25T08:00:00Z"),
-    HoraFim: new Date("2025-09-25T08:05:00Z"),
-    IdBandeja: bandeja1Id,
-    StatusValidacao: "Correta",
-    Observacao: "Entrega bem-sucedida"
-  },
-  {
-    _id: entrega2Id,
-    IdPaciente: pacienteAnaId,
-    IdCopeira: copeiraJoaoId,
-    HoraInicio: new Date("2025-09-25T08:15:00Z"),
-    HoraFim: new Date("2025-09-25T08:20:00Z"),
-    IdBandeja: bandeja2Id,
-    StatusValidacao: "Correta",
-    Observacao: "Sem intercorrências"
-  }
-]);
+// ============================================================
+// 4. GERAR 150 PACIENTES
+// ============================================================
+print("Gerando 150 Pacientes...");
+for (var i = 0; i < 150; i++) {
+    var id = gerarUUID();
+    idsPacientes.push(id);
+    
+    var nomeCompleto = itemAleatorio(nomes) + " " + itemAleatorio(sobrenomes);
+    var idDietaVinculada = itemAleatorio(idsDietas); 
 
-// --- Verificação Final ---
-print("Banco atualizado com sucesso! Verificando contagens:");
-print("Dietas: " + db.Dietas.countDocuments({}));
-print("Copeiras: " + db.Copeiras.countDocuments({}));
-print("Bandejas: " + db.Bandejas.countDocuments({}));
-print("Pacientes: " + db.Pacientes.countDocuments({}));
-print("Entregas: " + db.Entregas.countDocuments({}));
+    db.Pacientes.insertOne({
+        _id: id,
+        Nome: nomeCompleto,
+        NumQuarto: numeroAleatorio(100, 500),
+        CodPulseira: "P-" + (5000 + i),
+        IdDieta: idDietaVinculada,
+        Ativo: true
+    });
+}
+
+// ============================================================
+// 5. GERAR 150 ENTREGAS
+// ============================================================
+print("Gerando 150 Entregas...");
+for (var i = 0; i < 150; i++) {
+    var id = gerarUUID();
+    
+    var idPaciente = itemAleatorio(idsPacientes);
+    var idCopeira = itemAleatorio(idsCopeiras);
+    var idBandeja = itemAleatorio(idsBandejas);
+
+    // Lógica de Status
+    var statusPossiveis = ["Concluído", "Concluído", "Concluído", "Em andamento", "Erro"]; // Mais peso para Concluído
+    var statusEscolhido = itemAleatorio(statusPossiveis);
+    
+    // Datas
+    var dataInicio = new Date();
+    // Espalha as entregas nos últimos 30 dias
+    dataInicio.setDate(dataInicio.getDate() - numeroAleatorio(0, 30)); 
+    dataInicio.setHours(numeroAleatorio(7, 20), numeroAleatorio(0, 59), 0);
+    
+    var dataFim = null;
+    var obs = "";
+
+    if (statusEscolhido === "Concluído") {
+        dataFim = new Date(dataInicio);
+        dataFim.setMinutes(dataInicio.getMinutes() + numeroAleatorio(5, 25)); // Durou entre 5 a 25 min
+        obs = "Entrega realizada com sucesso.";
+    } else if (statusEscolhido === "Erro") {
+        dataFim = new Date(dataInicio);
+        dataFim.setMinutes(dataInicio.getMinutes() + numeroAleatorio(2, 10));
+        obs = "Paciente recusou a refeição.";
+    } else {
+        // Em andamento (HoraFim deve ser nula)
+        dataFim = null;
+        obs = "Aguardando retorno.";
+    }
+
+    db.Entregas.insertOne({
+        _id: id,
+        IdPaciente: idPaciente,
+        IdCopeira: idCopeira,
+        IdBandeja: idBandeja,
+        HoraInicio: dataInicio,
+        HoraFim: dataFim,
+        StatusValidacao: statusEscolhido,
+        Observacao: obs
+    });
+}
+
+print("==========================================");
+print("Banco hospitalDB pronto.");
+print("==========================================");
+
+// Script dos Índices
+// use hospitalDB; sempre deixamos comentado esse comando pois o vs code não identifica o comando
+
+print("--- Iniciando Criação de Índices ---");
+
+// ============================================================
+// 1. COLEÇÃO: PACIENTES
+// ============================================================
+// Motivo: Usado na barra de busca (SearchString) e ordenação
+db.Pacientes.createIndex({ "Nome": 1 }); 
+
+// Motivo: Usado em quase todas as consultas do Controller (Filtro Lógico)
+db.Pacientes.createIndex({ "Ativo": 1 });
+
+// Motivo: Otimizar o $lookup que busca a Dieta do Paciente
+db.Pacientes.createIndex({ "IdDieta": 1 });
+
+// Motivo: (Opcional) Garantir que o código da pulseira seja único e rápido de achar
+db.Pacientes.createIndex({ "CodPulseira": 1 });
+
+print("Índices de Pacientes criados.");
+
+// ============================================================
+// 2. COLEÇÃO: DIETAS
+// ============================================================
+// Motivo: Usado para carregar os Dropdowns ordenados por nome
+// Dica: Índice composto (filtra ativos E ordena por nome numa só passada)
+db.Dietas.createIndex({ "Ativo": 1, "NomeDieta": 1 });
+
+print("Índices de Dietas criados.");
+
+// ============================================================
+// 3. COLEÇÃO: COPEIRAS
+// ============================================================
+// Motivo: Usado para carregar os Dropdowns ordenados por nome e filtrados por ativo
+db.Copeiras.createIndex({ "Ativo": 1, "Nome": 1 });
+
+print("Índices de Copeiras criados.");
+
+// ============================================================
+// 4. COLEÇÃO: BANDEJAS
+// ============================================================
+// Motivo: Buscar rapidamente pelo código (ex: leitura de QR Code futuro)
+db.Bandejas.createIndex({ "CodBandeja": 1 }, { unique: true });
+
+// Motivo: Otimizar buscas de bandejas ativas
+db.Bandejas.createIndex({ "Ativo": 1 });
+
+print("Índices de Bandejas criados.");
+
+// ============================================================
+// 5. COLEÇÃO: ENTREGAS (A mais pesada)
+// ============================================================
+// Motivo: CRÍTICO para o "Histórico do Paciente".
+// Permite achar rápido as entregas de um paciente e já devolve ordenado por data.
+db.Entregas.createIndex({ "IdPaciente": 1, "HoraInicio": -1 });
+
+// Motivo: CRÍTICO para o Relatório "Tempo Médio por Copeira".
+// Acelera o filtro por copeira.
+db.Entregas.createIndex({ "IdCopeira": 1 });
+
+// Motivo: Para o Dashboard (contar entregas em andamento onde HoraFim é nulo)
+db.Entregas.createIndex({ "HoraFim": 1 });
+
+// Motivo: Para validar relacionamentos
+db.Entregas.createIndex({ "IdBandeja": 1 });
+
+print("Índices de Entregas criados.");
+print("--- Concluído com Sucesso! ---");
