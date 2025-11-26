@@ -160,17 +160,30 @@ O projeto é viável em todas as dimensões: mercado, recursos e operação, apr
 
 ## 9. Design
 
-Paleta de cores, tipografia e wireframes serão definidos na etapa de prototipagem.  
+---
 
-`[A ser desenvolvido]`
+9. Design
+
+O design do projeto segue integralmente a identidade visual da Unimed, mantendo consistência com seus padrões oficiais. Foram aplicadas:
+
+Paleta de Cores Institucional: tons de verde característicos da marca (verde Unimed, verde secundário e variações complementares).
+
+Tipografia Oficial: uso de fontes que se aproximam da identidade visual da Unimed, priorizando legibilidade e alinhamento com o branding da cooperativa.
+
+Elementos Visuais Padronizados: uso de ícones, espaçamentos e componentes que refletem a simplicidade, clareza e acolhimento presentes nos materiais Unimed.
+
+Layout Consistente: telas projetadas seguindo diretrizes modernas, minimalistas e compatíveis com a linha adotada pela empresa.
+
+
+Os wireframes e protótipos foram desenvolvidos respeitando fielmente o guia de marca, garantindo que a experiência se mantenha coerente com o ecossistema visual da Unimed.
+
 
 ---
 
 ## 10. Protótipo
 
-Será desenvolvido um protótipo funcional em ferramenta de design como Figma.  
+  https://www.figma.com/design/c5hez5J1n6lQmMHrCtTWZu/Untitled?fuid=1297872424791518125
 
-`[A ser desenvolvido]`
 
 ---
 
