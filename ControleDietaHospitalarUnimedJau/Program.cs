@@ -5,7 +5,7 @@ using ControleDietaHospitalarUnimedJau.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ProjetoMongoDb.Seed;
+using ControleDietaHospitalarUnimedJau.Seed;
 
 namespace ControleDietaHospitalarUnimedJau
 {
