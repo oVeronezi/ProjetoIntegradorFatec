@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
 using ControleDietaHospitalarUnimedJau.Models;
 using ControleDietaHospitalarUnimedJau.Data;
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize] // <--- 1. BLOQUEIA TUDO (Create, Edit, Delete, Finalizar)
     public class EntregasController : Controller
     {
         private readonly ContextMongodb _context;
@@ -19,9 +21,11 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             _context = context;
         }
 
-        // GET: Index (Correto! O Lookup não filtra, mantendo o histórico)
+        // GET: Index (Completo, com Lookups)
+        [AllowAnonymous] // <--- 2. LIBERA LEITURA PÚBLICA
         public async Task<IActionResult> Index()
         {
+            // O Index NÃO filtra por Ativo, para manter o histórico visível
             var pipeline = _context.Entregas.Aggregate()
                 .Lookup("Pacientes", "IdPaciente", "_id", "DetalhesPaciente")
                 .Unwind("DetalhesPaciente", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
@@ -37,7 +41,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(entregasCompletas);
         }
 
-        // GET: Details (Correto! O Lookup não filtra, mantendo o histórico)
+        // GET: Details (Completo, com Lookups)
+        [AllowAnonymous] // <--- 3. LIBERA LEITURA PÚBLICA
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null) return NotFound();
@@ -65,14 +70,14 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         // GET: Entregas/Create
         public async Task<IActionResult> Create()
         {
-            // --- CORREÇÃO 1: Filtrar Dropdowns para mostrar apenas ATIVOS ---
+            // --- CORREÇÃO 4: Filtrar Dropdowns para mostrar apenas ATIVOS ---
             var pacientes = await _context.Pacientes.Find(p => p.Ativo == true).ToListAsync();
             ViewBag.IdPaciente = new SelectList(pacientes, "Id", "Nome");
 
             var copeiras = await _context.Copeiras.Find(c => c.Ativo == true).ToListAsync();
             ViewBag.IdCopeira = new SelectList(copeiras, "Id", "Nome");
 
-            // (Vamos filtrar Bandejas também, antecipando o próximo passo)
+            // *** AQUI ESTÁ A CORREÇÃO DA BANDEJA ***
             var bandejas = await _context.Bandejas.Find(b => b.Ativo == true).ToListAsync();
             ViewBag.IdBandeja = new SelectList(bandejas, "Id", "CodBandeja");
 
@@ -84,7 +89,6 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Observacao,IdPaciente,IdCopeira,IdBandeja")] Entrega entrega)
         {
-            // ... (Remoção dos ModelStates - está correto) ...
             ModelState.Remove("DetalhesPaciente");
             ModelState.Remove("DetalhesCopeira");
             ModelState.Remove("DetalhesBandeja");
@@ -103,7 +107,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // --- CORREÇÃO 2: Filtrar Dropdowns (em caso de erro de validação) ---
+            // Recarregar Dropdowns (Filtrados) em caso de erro
             var pacientes = await _context.Pacientes.Find(p => p.Ativo == true).ToListAsync();
             ViewBag.IdPaciente = new SelectList(pacientes, "Id", "Nome", entrega.IdPaciente);
 
@@ -121,11 +125,10 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         {
             if (id == null) return NotFound();
 
-            // (Não filtramos por Ativo aqui, pois podemos querer editar uma entrega antiga)
             var entrega = await _context.Entregas.Find(m => m.Id == id).FirstOrDefaultAsync();
             if (entrega == null) return NotFound();
 
-            // --- CORREÇÃO 3: Filtrar Dropdowns para mostrar apenas ATIVOS ---
+            // --- CORREÇÃO 5: Filtrar Dropdowns no Edit também ---
             var pacientes = await _context.Pacientes.Find(p => p.Ativo == true).ToListAsync();
             ViewBag.IdPaciente = new SelectList(pacientes, "Id", "Nome", entrega.IdPaciente);
 
@@ -145,7 +148,6 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         {
             if (id != entrega.Id) return NotFound();
 
-            // ... (Remoção dos ModelStates - está correto) ...
             ModelState.Remove("DetalhesPaciente");
             ModelState.Remove("DetalhesCopeira");
             ModelState.Remove("DetalhesBandeja");
@@ -159,19 +161,13 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
                 }
                 catch (Exception)
                 {
-                    if (!EntregaExists(entrega.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!EntregaExists(entrega.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
 
-            // --- CORREÇÃO 4: Filtrar Dropdowns (em caso de erro de validação) ---
+            // Recarregar Dropdowns (Filtrados)
             var pacientes = await _context.Pacientes.Find(p => p.Ativo == true).ToListAsync();
             ViewBag.IdPaciente = new SelectList(pacientes, "Id", "Nome", entrega.IdPaciente);
 
@@ -184,7 +180,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(entrega);
         }
 
-        // GET: Delete (Correto! Não filtra por Ativo)
+        // GET: Delete
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null) return NotFound();
@@ -208,12 +204,11 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return View(entrega);
         }
 
-        // POST: Delete (Físico - Correto)
+        // POST: Delete (Físico - Mantido para Entregas)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            // O Delete de Entregas é físico (Delete Lógico não se aplica aqui)
             await _context.Entregas.DeleteOneAsync(m => m.Id == id);
             return RedirectToAction(nameof(Index));
         }
@@ -223,7 +218,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             return _context.Entregas.Find(e => e.Id == id).Any();
         }
 
-        // POST: Entregas/Finalizar/5 (Correto)
+        // POST: Finalizar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Finalizar(Guid id)

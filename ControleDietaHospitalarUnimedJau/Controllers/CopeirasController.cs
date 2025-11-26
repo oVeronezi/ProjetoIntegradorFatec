@@ -9,9 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize]
     public class CopeirasController : Controller
     {
         private readonly ContextMongodb _context;

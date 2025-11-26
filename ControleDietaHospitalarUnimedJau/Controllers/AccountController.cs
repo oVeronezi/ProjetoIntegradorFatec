@@ -115,7 +115,7 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = new ApplicationUser { UserName = "admin@unimed.com", Email = "admin@unimed.com" };
 
             if (user == null)
             {
@@ -136,6 +136,23 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CriarAdmin()
+        {
+            // Cria o utilizador
+            var user = new ApplicationUser { UserName = "admin", Email = "admin@unimed.com" };
+            var result = await _userManager.CreateAsync(user, "Admin@123");
+
+            if (result.Succeeded)
+            {
+                return Content("Usuário Admin criado com sucesso! Agora faça login.");
+            }
+            else
+            {
+                return Content("Erro ao criar: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
         }
     }//fim da classe
 }

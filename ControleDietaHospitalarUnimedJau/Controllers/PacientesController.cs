@@ -9,9 +9,11 @@ using ControleDietaHospitalarUnimedJau.Models;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson; // Necessário para o Regex
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
+    [Authorize]
     public class PacientesController : Controller
     {
         private readonly ContextMongodb _context;

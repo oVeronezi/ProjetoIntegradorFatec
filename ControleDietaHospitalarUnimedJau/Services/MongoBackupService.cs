@@ -84,12 +84,12 @@ public class MongoBackupService : BackgroundService
         string basePath = config["DirectoryPath"];
         int retentionDays = config.GetValue<int>("RetentionDays", 30);
 
-        // LEITURA DA URI DE CONEXÃO DO ARQUIVO DE CONFIGURAÇÃO (appsettings.json)
+        // 1. Obter a String de Conexão
         string mongoUri = _configuration.GetValue<string>("mongoConnection:ConnectionString");
 
         if (string.IsNullOrEmpty(mongoUri))
         {
-            _logger.LogError("Connection String (mongoConnection:ConnectionString) não encontrada na configuração. O backup falhará.");
+            _logger.LogError("Connection String não encontrada.");
             return;
         }
 
@@ -98,45 +98,57 @@ public class MongoBackupService : BackgroundService
 
         if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 
-        // --- 1. EXECUTAR MONGODUMP E CAPTURAR A SAÍDA ---
-        _logger.LogInformation($"Iniciando processo de mongodump e compactação GZIP para: {gzFilePath} 💾");
+        _logger.LogInformation($"Iniciando backup direto via mongodump para: {gzFilePath} 💾");
 
+        // --- 2. CORREÇÃO CRUCIAL NOS ARGUMENTOS ---
+        // Em vez de redirecionar a saída (>), dizemos ao mongodump para escrever direto no arquivo (--archive=CAMINHO)
+        // Isso é mais robusto e evita arquivos de 0kb por falha de stream.
+        
         var processInfo = new ProcessStartInfo
         {
             FileName = _mongodumpPath,
-
-            // CORREÇÃO: Usamos --uri para garantir que o mongodump se conecte.
-            // O caminho completo da URI deve estar entre aspas duplas, caso haja espaços ou caracteres especiais.
-            Arguments = $"--uri \"{mongoUri}\" --db {dbName} --archive --gzip",
-
-            RedirectStandardOutput = true,  // Necessário para ler o fluxo binário
-            RedirectStandardError = true,
-            UseShellExecute = false,        // Essencial para redirecionar streams
+            
+            // AQUI ESTÁ O SEGREDO: --archive="CaminhoDoArquivo"
+            Arguments = $"--uri=\"{mongoUri}\" --db {dbName} --archive=\"{gzFilePath}\" --gzip",
+            
+            RedirectStandardOutput = false, // Não precisamos ler a saída binária
+            RedirectStandardError = true,   // Mas queremos ler os logs de erro/sucesso
+            UseShellExecute = false,
             CreateNoWindow = true
         };
 
-        using (var process = Process.Start(processInfo))
+        try 
         {
-            // BLOCO DE REDIRECIONAMENTO: LÊ A SAÍDA BINÁRIA E ESCREVE DIRETAMENTE NO ARQUIVO .GZ
-            using (var outputStream = process.StandardOutput.BaseStream)
-            using (var fileStream = new FileStream(gzFilePath, FileMode.Create, FileAccess.Write))
+            using (var process = Process.Start(processInfo))
             {
-                outputStream.CopyTo(fileStream);
-            }
+                // Capturamos a saída de log do mongodump (ele escreve logs no Stderr)
+                string outputLogs = process.StandardError.ReadToEnd();
+                
+                process.WaitForExit();
 
-            process.WaitForExit();
-            string output = process.StandardError.ReadToEnd();
-
-            if (process.ExitCode != 0)
-            {
-                _logger.LogError($"Falha no mongodump. ExitCode: {process.ExitCode}. Detalhes: {output}");
-                return;
+                if (process.ExitCode == 0)
+                {
+                    _logger.LogInformation($"Backup concluído com sucesso! Arquivo criado: {gzFilePath}");
+                    _logger.LogInformation($"Log do Mongodump: {outputLogs}"); // Útil para debug
+                }
+                else
+                {
+                    _logger.LogError($"Falha no mongodump (ExitCode: {process.ExitCode}). Detalhes:\n{outputLogs}");
+                    
+                    // Se falhou e criou um arquivo de 0kb, vamos apagá-lo para não confundir
+                    if (File.Exists(gzFilePath) && new FileInfo(gzFilePath).Length == 0)
+                    {
+                        File.Delete(gzFilePath);
+                    }
+                }
             }
         }
+        catch (Exception ex)
+        {
+             _logger.LogError(ex, "Erro ao iniciar o processo mongodump.");
+        }
 
-        _logger.LogInformation($"Backup concluído com sucesso em formato GZIP: {gzFilePath} ✨");
-
-        // --- 2. LIMPEZA DE ARQUIVOS ANTIGOS ---
+        // --- 3. LIMPEZA ---
         CleanupOldBackups(basePath, retentionDays);
     }
 
