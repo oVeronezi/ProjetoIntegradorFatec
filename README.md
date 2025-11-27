@@ -203,6 +203,9 @@ O **Sistema de Controle de Dieta Hospitalar** representa uma solução moderna e
 
 ## 13. Referências Bibliográficas
 
-`[A ser inserido]`
+https://learn.microsoft.com/pt-br/dotnet/csharp/
+https://www.mongodb.com/pt-br/docs/
+https://www.unimed.coop.br/site/
+https://gemini.google.com/app
 
 
