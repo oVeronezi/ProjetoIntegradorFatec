@@ -189,9 +189,8 @@ Os wireframes e protótipos foram desenvolvidos respeitando fielmente o guia de 
 
 ## 11. Aplicação
 
-A aplicação será implementada com base no protótipo aprovado e validada conforme os requisitos.  
-
-`[A ser desenvolvido]`
+A aplicação foi desenvolvida alinhada às diretrizes visuais e funcionais da Unimed.
+Ela implementa todas as regras de negócio definidas, garantindo segurança, precisão e rastreabilidade no processo de gestão de dietas hospitalares.
 
 ---
 
