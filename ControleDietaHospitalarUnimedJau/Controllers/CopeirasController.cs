@@ -1,6 +1,7 @@
 ﻿using ControleDietaHospitalarUnimedJau.Data;
 using ControleDietaHospitalarUnimedJau.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
+using MongoDB.Bson;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -28,10 +29,23 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Copeiras
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string searchString)
         {
-            // --- CORREÇÃO 2: Usa o _filtroAtivos ---
-            return View(await _context.Copeiras.Find(_filtroAtivos).ToListAsync());
+            var filter = _filtroAtivos;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var filterBusca = Builders<Copeira>.Filter.Regex("Nome", new BsonRegularExpression(searchString, "i"));
+                filter = Builders<Copeira>.Filter.And(_filtroAtivos, filterBusca);
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            // CORREÇÃO: Adicionado .SortBy(c => c.Nome)
+            return View(await _context.Copeiras.Find(filter)
+                                             .SortBy(c => c.Nome)
+                                             .ToListAsync());
         }
 
         // GET: Copeiras/Details/5

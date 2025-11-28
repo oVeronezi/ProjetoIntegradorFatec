@@ -10,7 +10,7 @@
             <div class="card shadow-lg border-0 rounded-3">
                 
                 <div class="card-header bg-success d-flex justify-content-between align-items-center py-3">
-                    <h4 class="mb-0 fw-bold"><i class="bi bi-card-list"></i> Detalhes da Dieta</h4>
+                    <h4 class="mb-0 fw-bold text-white"><i class="bi bi-card-list"></i> Detalhes da Dieta</h4>
                     @if (Model.Ativo)
                     {
                         <span class="badge bg-white text-success px-3 py-2 rounded-pill">
@@ -29,7 +29,7 @@
                     
                     <div class="mb-4 text-center">
                         <small class="text-uppercase fw-bold tracking-wide">Nome da Dieta</small>
-                        <h1 class="display-6 text-dark fw-bold mt-1">@Html.DisplayFor(model => model.NomeDieta)</h1>
+                        <h1 class="display-6 fw-bold mt-1">@Html.DisplayFor(model => model.NomeDieta)</h1>
                     </div>
 
                     <hr class="my-4" style="opacity: 0.1;">

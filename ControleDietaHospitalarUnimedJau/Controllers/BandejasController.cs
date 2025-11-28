@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ControleDietaHospitalarUnimedJau.Data;
+using ControleDietaHospitalarUnimedJau.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
-using ControleDietaHospitalarUnimedJau.Models;
-using ControleDietaHospitalarUnimedJau.Data;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MongoDB.Bson;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -33,13 +34,24 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             ViewBag.TipoDieta = new SelectList(dietas, "Id", "NomeDieta", selectedDieta);
         }
 
+
         // GET: Bandejas
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            // --- CORREÇÃO 3: Aplica o filtro de Ativos ---
+            var filter = _filtroAtivos;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var filterBusca = Builders<Bandeja>.Filter.Regex("CodBandeja", new BsonRegularExpression(searchString, "i"));
+                filter = Builders<Bandeja>.Filter.And(_filtroAtivos, filterBusca);
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
             var pipeline = _context.Bandejas.Aggregate()
-                .Match(_filtroAtivos) // <-- FILTRO APLICADO
+                .Match(filter)
+                .SortBy(b => b.CodBandeja) // <-- CORREÇÃO: ORDENAÇÃO AQUI
                 .Lookup("Dietas", "TipoDieta", "_id", "DetalhesDieta")
                 .Unwind("DetalhesDieta", new AggregateUnwindOptions<Bandeja> { PreserveNullAndEmptyArrays = true });
 

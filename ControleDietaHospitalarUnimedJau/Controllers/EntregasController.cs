@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ControleDietaHospitalarUnimedJau.Data;
+using ControleDietaHospitalarUnimedJau.Models;
+using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
-using ControleDietaHospitalarUnimedJau.Models;
-using ControleDietaHospitalarUnimedJau.Data;
-using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MongoDB.Bson;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -21,12 +22,22 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
             _context = context;
         }
 
-        // GET: Index (Completo, com Lookups)
-        [AllowAnonymous] // <--- 2. LIBERA LEITURA PÚBLICA
-        public async Task<IActionResult> Index()
+        // GET: Index
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string searchString)
         {
-            // O Index NÃO filtra por Ativo, para manter o histórico visível
+            var filter = Builders<Entrega>.Filter.Empty;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                filter = Builders<Entrega>.Filter.Regex("StatusValidacao", new BsonRegularExpression(searchString, "i"));
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
             var pipeline = _context.Entregas.Aggregate()
+                .Match(filter)
+                .SortByDescending(e => e.HoraInicio) // <-- CORREÇÃO: MAIS RECENTES NO TOPO
                 .Lookup("Pacientes", "IdPaciente", "_id", "DetalhesPaciente")
                 .Unwind("DetalhesPaciente", new AggregateUnwindOptions<Entrega> { PreserveNullAndEmptyArrays = true })
                 .Lookup("Copeiras", "IdCopeira", "_id", "DetalhesCopeira")

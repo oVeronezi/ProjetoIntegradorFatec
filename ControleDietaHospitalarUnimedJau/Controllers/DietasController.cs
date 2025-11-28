@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ControleDietaHospitalarUnimedJau.Data;
+using ControleDietaHospitalarUnimedJau.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore; // Este using parece não ser necessário para MongoDB
 using MongoDB.Driver;
-using ControleDietaHospitalarUnimedJau.Models;
-using ControleDietaHospitalarUnimedJau.Data;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization; // <--- Necessário para a segurança
+using MongoDB.Bson;
 
 namespace ControleDietaHospitalarUnimedJau.Controllers
 {
@@ -30,10 +31,23 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Dietas
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string searchString)
         {
-            // --- CORREÇÃO 2: Usa o _filtroAtivos em vez de (_ => true) ---
-            return View(await _context.Dietas.Find(_filtroAtivos).ToListAsync());
+            var filter = _filtroAtivos;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var filterBusca = Builders<Dieta>.Filter.Regex("NomeDieta", new BsonRegularExpression(searchString, "i"));
+                filter = Builders<Dieta>.Filter.And(_filtroAtivos, filterBusca);
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            // CORREÇÃO: Adicionado .SortBy(d => d.NomeDieta)
+            return View(await _context.Dietas.Find(filter)
+                                             .SortBy(d => d.NomeDieta)
+                                             .ToListAsync());
         }
 
         // GET: Dietas/Details/5

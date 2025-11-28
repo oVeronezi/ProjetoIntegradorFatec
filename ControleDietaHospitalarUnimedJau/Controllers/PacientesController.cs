@@ -28,6 +28,8 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
         }
 
         // GET: Pacientes (Correto)
+        // GET: Pacientes
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString)
         {
             var filter = _filtroAtivos;
@@ -42,22 +44,14 @@ namespace ControleDietaHospitalarUnimedJau.Controllers
 
             var pipeline = _context.Pacientes.Aggregate()
                 .Match(filter)
-                .Lookup(
-                    foreignCollection: _context.Dietas,
-                    localField: p => p.IdDieta,
-                    foreignField: d => d.Id,
-                    @as: (Paciente p) => p.DetalhesDieta
-                )
-                .Unwind<Paciente, Paciente>(
-                    p => p.DetalhesDieta,
-                    new AggregateUnwindOptions<Paciente> { PreserveNullAndEmptyArrays = true }
-                )
-                .ToListAsync();
+                .SortBy(p => p.Nome) // <-- CORREÇÃO: ORDENAÇÃO AQUI
+                .Lookup("Dietas", "IdDieta", "_id", "DetalhesDieta")
+                .Unwind("DetalhesDieta", new AggregateUnwindOptions<Paciente> { PreserveNullAndEmptyArrays = true });
 
-            return View(await pipeline);
+            return View(await pipeline.ToListAsync());
         }
 
-        // GET: Pacientes/Details/5 (Correto)
+        // GET: Pacientes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null) return NotFound();
